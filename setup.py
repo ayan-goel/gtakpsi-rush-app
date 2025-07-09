@@ -64,7 +64,7 @@ print("Deleted all PIS questions.")
 print("Deleting all Rush App pictures...")
 
 # delete all rushee pics from s3
-bucket_name = "rush-app-pictures"
+bucket_name = "rush-app-photos"
 s3 = boto3.client(  "s3",
                     aws_access_key_id=aws_access_key,
                     aws_secret_access_key=aws_secret_key
