@@ -64,6 +64,73 @@ export default function Admin() {
           setResults(error.response?.data || "An error occurred");
         }
       };
+
+    const exportPISSchedule = async () => {
+        try {
+            const api = import.meta.env.VITE_API_PREFIX;
+            const response = await axios.get(`${api}/rushee/get-timeslots`);
+            
+            if (response.data.status === "success") {
+                const timeslots = response.data.payload;
+                
+                // Create CSV content
+                const csvHeaders = ["Date", "Time", "Rushee Name"];
+                
+                // Process each timeslot and create objects for easy sorting
+                const processedSlots = timeslots.map(slot => {
+                    // Convert MongoDB DateTime to JavaScript Date
+                    const jsDate = new Date(parseInt(slot.time.$date.$numberLong));
+                    
+                    // Format date and time
+                    const date = jsDate.toLocaleDateString(); // MM/DD/YYYY format
+                    const time = jsDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // HH:MM AM/PM format
+                    
+                    // Get rushee name
+                    const rusheeName = `${slot.rushee_first_name} ${slot.rushee_last_name}`;
+                    
+                    // Create CSV row (escape commas in names)
+                    const csvRow = [
+                        `"${date}"`,
+                        `"${time}"`,
+                        `"${rusheeName}"`
+                    ].join(",");
+                    
+                    return {
+                        originalDate: jsDate,
+                        csvRow: csvRow
+                    };
+                });
+                
+                // Sort by full date/time (chronological order)
+                processedSlots.sort((a, b) => a.originalDate - b.originalDate);
+                
+                // Create final CSV rows array
+                const csvRows = [csvHeaders.join(","), ...processedSlots.map(slot => slot.csvRow)];
+                
+                // Create and download CSV
+                const csvContent = csvRows.join("\n");
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", `PIS_Schedule_${new Date().toISOString().split('T')[0]}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
+                setResults(`Successfully exported ${timeslots.length} PIS appointments to CSV`);
+            } else {
+                setResults("Error: Failed to fetch PIS timeslots");
+            }
+        } catch (error) {
+            console.error("Export error:", error);
+            setResults(`Error exporting PIS schedule: ${error.message}`);
+        }
+    };
       
 
     return (
@@ -195,6 +262,18 @@ export default function Admin() {
                     className="bg-green-500 text-white px-4 py-2"
                 >
                     Fetch Timeslots
+                </button>
+            </div>
+
+            {/* Export PIS Schedule */}
+            <div className="mb-6">
+                <h2 className="text-xl font-semibold">Export PIS Schedule</h2>
+                <p className="text-gray-600 mb-2">Download a CSV file with all PIS appointments</p>
+                <button
+                    onClick={exportPISSchedule}
+                    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded transition duration-200"
+                >
+                    Export PIS Schedule
                 </button>
             </div>
 
