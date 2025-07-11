@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
+import VoiceRecorder from "../components/VoiceRecorder";
 import axios from "axios";
 
 import { verifyUser } from "../js/verifications";
@@ -196,12 +197,26 @@ export default function PIS() {
                                             </label>
                                         </div>
                                     ) : (
-                                        <textarea
-                                            className="w-full p-3 bg-slate-600 text-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-                                            placeholder="Your answer..."
-                                            value={answers[question.question] || ""}
-                                            onChange={(e) => handleAnswerChange(question.question, e.target.value)}
-                                        />
+                                        <div className="flex gap-3 items-center">
+                                            <textarea
+                                                className="flex-1 p-3 bg-slate-600 text-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 min-h-[100px] resize-y"
+                                                placeholder="Your answer..."
+                                                value={answers[question.question] || ""}
+                                                onChange={(e) => handleAnswerChange(question.question, e.target.value)}
+                                            />
+                                            <div className="flex-shrink-0">
+                                                <VoiceRecorder
+                                                    onTranscription={(transcription) => {
+                                                        // Append to existing text if there's already content
+                                                        const existingAnswer = answers[question.question] || "";
+                                                        const newAnswer = existingAnswer 
+                                                            ? `${existingAnswer} ${transcription}` 
+                                                            : transcription;
+                                                        handleAnswerChange(question.question, newAnswer);
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             ))
