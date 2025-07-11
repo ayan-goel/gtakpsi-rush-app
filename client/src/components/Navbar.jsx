@@ -30,12 +30,12 @@ export default function Navbar(props) {
                             <li>
                                 <a href="/dashboard" class="block py-2 px-3 text-whit rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">Dashboard</a>
                             </li>
-                            <li>
+                            {/* <li>
                                 <a href="/brother/dashboard" class="block py-2 px-3 text-whit rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">PIS</a>
                             </li>
                             <li>
                                 <a href="/brother/pis" class="block py-2 px-3 text-whit rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">PIS Signup</a>
-                            </li>
+                            </li> */}
                             <li>
                                 <a href="/attendance" target="_blank" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-whit">Attendance</a>
                             </li>

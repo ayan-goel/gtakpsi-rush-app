@@ -47,8 +47,8 @@ function App() {
           <Route path='/rushee/:gtid/:link' element={<RusheePage/>} />
           <Route path='/pis/:gtid' element={<PIS/>} />
           <Route path='/attendance' element={<Attendance/>} />
-          <Route path='/brother/pis' element={<BrotherPIS/>} />
-          <Route path='/brother/dashboard' element={<PISDashboard/>} />
+          {/* <Route path='/brother/pis' element={<BrotherPIS/>} />
+          <Route path='/brother/dashboard' element={<PISDashboard/>} /> */}
           <Route path='*' element={<NotFound/>} />
 
           <Route path='/admin/addpis' element={<AddPIS/>} />
