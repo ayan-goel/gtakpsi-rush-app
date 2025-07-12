@@ -13,7 +13,6 @@ import Fuse from "fuse.js";
 
 import { verifyUser } from "../js/verifications";
 import Button from "../components/Button";
-import BidCommitteeDashboard from "./BidCommitteeDashboard";
 
 export default function Dashboard(props) {
     const [user, setUser] = useState(
@@ -30,15 +29,9 @@ export default function Dashboard(props) {
     const [selectedClass, setSelectedClass] = useState("All");
     const [selectedCloud, setSelectedCloud] = useState("All");
     const [selectedSort, setSelectedSort] = useState("none");
-    const [bidCommitteeMode, setBidCommitteeMode] = useState(false);
 
     const navigate = useNavigate();
     const api = import.meta.env.VITE_API_PREFIX;
-
-    // If bid committee mode is enabled, render the bid committee dashboard
-    if (bidCommitteeMode) {
-        return <BidCommitteeDashboard {...props} />;
-    }
 
     function shuffleArray(array) {
         return array
@@ -177,14 +170,12 @@ export default function Dashboard(props) {
                                     <div className="flex items-center justify-between mb-4">
                                         <h1 className="text-3xl font-bold text-white">Rushee Dashboard</h1>
                                         <button
-                                            onClick={() => setBidCommitteeMode(!bidCommitteeMode)}
+                                            onClick={() => navigate("/bid-committee")}
                                             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                                                bidCommitteeMode 
-                                                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                                                    : 'bg-slate-700 text-white hover:bg-slate-600 border border-gray-300'
+                                                'bg-blue-600 text-white hover:bg-blue-700' 
                                             }`}
                                         >
-                                            {bidCommitteeMode ? 'Normal Mode' : 'Bid Committee Mode'}
+                                            Bid Committee Mode
                                         </button>
                                     </div>
 
