@@ -30,6 +30,12 @@ export default function Navbar(props) {
                             <li>
                                 <a href="/dashboard" class="block py-2 px-3 text-whit rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">Dashboard</a>
                             </li>
+                            <li>
+                                <a href="/bid-committee" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white">Bid Committee</a>
+                            </li>
+                            <li>
+                                <a href="/gtid-search" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white">GTID Search</a>
+                            </li>
                             {/* <li>
                                 <a href="/brother/dashboard" class="block py-2 px-3 text-whit rounded md:bg-transparent md:p-0 dark:text-white" aria-current="page">PIS</a>
                             </li>
