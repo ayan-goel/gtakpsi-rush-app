@@ -6,7 +6,6 @@ import { useMediaQuery } from "react-responsive";
 import Error from "../components/Error";
 import Loader from "../components/Loader";
 import Badges from "../components/Badge";
-import Fuse from "fuse.js";
 import { verifyUser } from "../js/verifications";
 import Button from "../components/Button";
 
@@ -107,11 +106,7 @@ export default function BidCommitteeDashboard(props) {
         }
     }, [loading, navigate]);
 
-    const fuse = new Fuse(rushees, {
-        keys: ["name", "gtid", "major", "email"],
-        threshold: 0.3,
-        minMatchCharLength: 1,
-    });
+    // Removed fuzzy search - only using exact GTID matching
 
     const handleSearch = (e) => {
         const input = e.target.value;
@@ -132,9 +127,9 @@ export default function BidCommitteeDashboard(props) {
             filtered = filtered.filter((rushee) => rushee.class === selectedClass);
         }
 
-        // Filter by query (search by GTID or other fields)
+        // Filter by query (search by GTID only)
         if (query.trim() !== "") {
-            // Check if query is a 9-digit GTID for exact matching
+            // Only allow 9-digit GTID for exact matching
             if (query.trim().length === 9 && /^[0-9]+$/.test(query.trim())) {
                 const exactMatch = filtered.find(rushee => rushee.gtid === query.trim());
                 if (exactMatch) {
@@ -143,9 +138,8 @@ export default function BidCommitteeDashboard(props) {
                     filtered = []; // No results for exact GTID match
                 }
             } else {
-                // Use fuzzy search for other queries
-                const fuzzyResults = fuse.search(query);
-                filtered = fuzzyResults.map((result) => result.item);
+                // Invalid GTID format - show no results
+                filtered = [];
             }
         }
 
@@ -196,47 +190,14 @@ export default function BidCommitteeDashboard(props) {
                                             type="text"
                                             value={query}
                                             onChange={handleSearch}
-                                            placeholder="Search by GTID, major, or email..."
+                                            placeholder="Search by 9-digit GTID..."
                                             className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-700 text-white placeholder-gray-400"
+                                            maxLength="9"
+                                            pattern="[0-9]{9}"
                                         />
                                     </div>
 
-                                    {/* GTID Quick Search */}
-                                    <div className="mb-4 p-4 bg-slate-700 rounded-lg border border-gray-600">
-                                        <h3 className="text-lg font-semibold text-white mb-2">Quick GTID Search</h3>
-                                        <p className="text-sm text-gray-300 mb-3">Enter a 9-digit GTID to quickly find a specific rushee</p>
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                id="gtidSearch"
-                                                placeholder="Enter 9-digit GTID..."
-                                                className="flex-1 p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-600 text-white placeholder-gray-400"
-                                                maxLength="9"
-                                                pattern="[0-9]{9}"
-                                            />
-                                            <button
-                                                onClick={() => {
-                                                    const gtidInput = document.getElementById('gtidSearch');
-                                                    const gtid = gtidInput.value.trim();
-                                                    if (gtid.length === 9 && /^[0-9]+$/.test(gtid)) {
-                                                        // Use exact GTID search instead of fuzzy search
-                                                        const exactMatch = rushees.find(rushee => rushee.gtid === gtid);
-                                                        if (exactMatch) {
-                                                            setFilteredRushees([exactMatch]);
-                                                        } else {
-                                                            alert(`No rushee found with GTID: ${gtid}`);
-                                                        }
-                                                        gtidInput.value = '';
-                                                    } else {
-                                                        alert('Please enter a valid 9-digit GTID');
-                                                    }
-                                                }}
-                                                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                                            >
-                                                Search GTID
-                                            </button>
-                                        </div>
-                                    </div>
+
 
                                     <div className="flex items-center justify-between mt-4">
                                         {/* Filters Group */}

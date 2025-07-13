@@ -392,15 +392,7 @@ export default function RusheeZoom() {
                         <Navbar />
                         <div className="h-10" />
 
-                        {isBidCommitteeMode() && (
-                            <div className="max-w-4xl mx-auto mb-4 p-4 bg-blue-600 rounded-lg">
-                                <div className="flex items-center justify-center">
-                                    <span className="text-white font-semibold text-lg">
-                                        🔒 Bid Committee Mode - Anonymized View
-                                    </span>
-                                </div>
-                            </div>
-                        )}
+
 
                         <div className="min-h-screen bg-slate-800 py-10 text-gray-100 p-4">
                             {/* Profile Header */}
@@ -454,16 +446,18 @@ export default function RusheeZoom() {
                                 </div>
                             </div>
 
-                            <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6 grid grid-cols-2 gap-6">
-                                <div onClick={() => {
-                                    navigate(`/pis/${gtid}`)
-                                }} className="cursor-pointer flex items-center justify-center bg-slate-400 h-12 w-full rounded-lg bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 focus:ring transform transition hover:scale-105 duration-300 ease-in-out">
-                                    Submit PIS
+                            {!isBidCommitteeMode() && (
+                                <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6 grid grid-cols-2 gap-6">
+                                    <div onClick={() => {
+                                        navigate(`/pis/${gtid}`)
+                                    }} className="cursor-pointer flex items-center justify-center bg-slate-400 h-12 w-full rounded-lg bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 focus:ring transform transition hover:scale-105 duration-300 ease-in-out">
+                                        Submit PIS
+                                    </div>
+                                    <div onClick={handleCopy} className="cursor-pointer flex items-center justify-center bg-slate-400 h-12 w-full rounded-lg bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 focus:ring transform transition hover:scale-105 duration-300 ease-in-out">
+                                        {copied ? "Link Copied!" : "Copy Edit Page Link"}
+                                    </div>
                                 </div>
-                                <div onClick={handleCopy} className="cursor-pointer flex items-center justify-center bg-slate-400 h-12 w-full rounded-lg bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 focus:ring transform transition hover:scale-105 duration-300 ease-in-out">
-                                    {copied ? "Link Copied!" : "Copy Edit Page Link"}
-                                </div>
-                            </div>
+                            )}
 
                             {/* Ratings */}
                             <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6">

@@ -166,17 +166,9 @@ export default function Dashboard(props) {
 
                             <div className="pt-20 p-4"> {/* Adjusted padding to account for Navbar */}
                                 <div className="container mx-auto px-4">
-                                    {/* Header with Bid Committee Toggle */}
-                                    <div className="flex items-center justify-between mb-4">
+                                    {/* Header */}
+                                    <div className="mb-4">
                                         <h1 className="text-3xl font-bold text-white">Rushee Dashboard</h1>
-                                        <button
-                                            onClick={() => navigate("/bid-committee")}
-                                            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                                                'bg-blue-600 text-white hover:bg-blue-700' 
-                                            }`}
-                                        >
-                                            Bid Committee Mode
-                                        </button>
                                     </div>
 
                                     {/* Search Bar */}
