@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import dayjs from 'dayjs';
 
 import Navbar from "../components/Navbar";
@@ -17,6 +17,7 @@ import Badges from "../components/Badge";
 export default function RusheeZoom() {
 
     const { gtid } = useParams();
+    const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user'))
 
     const [loading, setLoading] = useState(true);
@@ -42,6 +43,19 @@ export default function RusheeZoom() {
     const navigate = useNavigate();
 
     const api = import.meta.env.VITE_API_PREFIX;
+
+    // Function to assign rushee ID based on GTID
+    const getRusheeId = (gtid) => {
+        // Use the last 4 digits of GTID as the rushee ID, preserving leading zeros
+        return gtid.slice(-4);
+    };
+
+    // Check if user is in bid committee mode
+    const isBidCommitteeMode = () => {
+        return location.pathname.includes('/bid-committee') || 
+               location.search.includes('bid_committee=true') ||
+               document.referrer.includes('/bid-committee');
+    };
 
     const ratingFields = [
         "Why AKPsi",
@@ -378,31 +392,64 @@ export default function RusheeZoom() {
                         <Navbar />
                         <div className="h-10" />
 
+                        {isBidCommitteeMode() && (
+                            <div className="max-w-4xl mx-auto mb-4 p-4 bg-blue-600 rounded-lg">
+                                <div className="flex items-center justify-center">
+                                    <span className="text-white font-semibold text-lg">
+                                        🔒 Bid Committee Mode - Anonymized View
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="min-h-screen bg-slate-800 py-10 text-gray-100 p-4">
                             {/* Profile Header */}
                             <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg overflow-hidden">
                                 <div className="flex items-center space-x-6 p-6">
-                                    <img
-                                        src={rushee.image_url}
-                                        alt={`${rushee.first_name} ${rushee.last_name}`}
-                                        className="w-44 h-44 rounded-lg object-cover border-2 border-slate-600"
-                                    />
+                                    {isBidCommitteeMode() ? (
+                                        // Bid Committee Mode - Show numbered placeholder
+                                        <div className="w-44 h-44 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg border-2 border-slate-600 flex items-center justify-center">
+                                            <span className="text-6xl font-bold text-white">
+                                                {getRusheeId(rushee.gtid)}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        // Normal Mode - Show actual photo
+                                        <img
+                                            src={rushee.image_url}
+                                            alt={`${rushee.first_name} ${rushee.last_name}`}
+                                            className="w-44 h-44 rounded-lg object-cover border-2 border-slate-600"
+                                        />
+                                    )}
                                     <div>
                                         <div className="flex flex-row gap-2 items-center">
-                                            <h1 className="text-3xl font-bold">
-                                                {rushee.first_name} {rushee.last_name}
-                                            </h1>
+                                            {isBidCommitteeMode() ? (
+                                                <h1 className="text-3xl font-bold">
+                                                    Rushee #{getRusheeId(rushee.gtid)}
+                                                </h1>
+                                            ) : (
+                                                <h1 className="text-3xl font-bold">
+                                                    {rushee.first_name} {rushee.last_name}
+                                                </h1>
+                                            )}
                                             {rushee.attendance.map((event, idx) => (
                                                 <Badges text={event.name} key={idx} />
                                             ))}
                                         </div>
-                                        <p className="text-slate-300">Pronouns: {rushee.pronouns}</p>
+                                        {!isBidCommitteeMode() && (
+                                            <>
+                                                <p className="text-slate-300">Pronouns: {rushee.pronouns}</p>
+                                                <p className="text-slate-300">Email: {rushee.email}</p>
+                                            </>
+                                        )}
                                         <p className="text-slate-300">Major: {rushee.major}</p>
                                         <p className="text-slate-300">Class: {rushee.class}</p>
-                                        <p className="text-slate-300">Email: {rushee.email}</p>
-                                        {/* <p>Phone: {rushee.phone_number}</p> */}
-                                        {/* <p>Housing: {rushee.housing}</p> */}
-                                        <p className="text-slate-300">GTID: {rushee.gtid}</p>
+                                        {isBidCommitteeMode() && (
+                                            <p className="text-slate-300">GTID: {rushee.gtid}</p>
+                                        )}
+                                        {!isBidCommitteeMode() && (
+                                            <p className="text-slate-300">GTID: {rushee.gtid}</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

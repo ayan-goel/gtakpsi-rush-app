@@ -31,8 +31,8 @@ export default function BidCommitteeDashboard(props) {
 
     // Function to assign rushee ID based on GTID
     const getRusheeId = (gtid) => {
-        // Use the last 4 digits of GTID as the rushee ID
-        return parseInt(gtid.slice(-4));
+        // Use the last 4 digits of GTID as the rushee ID, preserving leading zeros
+        return gtid.slice(-4);
     };
 
     // Function to generate a placeholder image with number
@@ -326,7 +326,7 @@ export default function BidCommitteeDashboard(props) {
                                             return (
                                                 <div
                                                     onClick={() => {
-                                                        window.open(`/brother/rushee/${rushee.gtid}`, "_blank");
+                                                        window.open(`/brother/rushee/${rushee.gtid}?bid_committee=true`, "_blank");
                                                     }}
                                                     key={rushee.id}
                                                     className="flex cursor-pointer flex-col bg-slate-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border-2 border-transparent hover:border-blue-500"

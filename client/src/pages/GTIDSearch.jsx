@@ -23,7 +23,8 @@ export default function GTIDSearch() {
 
     // Function to assign rushee ID based on GTID
     const getRusheeId = (gtid) => {
-        return parseInt(gtid.slice(-4));
+        // Use the last 4 digits of GTID as the rushee ID, preserving leading zeros
+        return gtid.slice(-4);
     };
 
     useEffect(() => {
@@ -226,7 +227,7 @@ export default function GTIDSearch() {
                                                         </div>
                                                     </div>
                                                     <button
-                                                        onClick={() => window.open(`/brother/rushee/${searchResult.gtid}`, "_blank")}
+                                                        onClick={() => window.open(`/brother/rushee/${searchResult.gtid}?bid_committee=true`, "_blank")}
                                                         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                                                     >
                                                         View Full Profile
