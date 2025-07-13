@@ -72,19 +72,19 @@
         "question_type": "Long"
     },
     {
-        "question": "[BROTHER A - Scribe Notes Submitter] Would you extend this rushee a bid?",
+        "question": "[BROTHER A] Would you extend this rushee a bid?",
         "question_type": "Long"
     },
     {
-        "question": "[BROTHER A - Scribe Notes Submitter] Why or Why Not?",
+        "question": "[BROTHER A] Why or Why Not?",
         "question_type": "Long"
     },
     {
-        "question": "[BROTHER B - Other Brother] Would you extend this rushee a bid?",
+        "question": "[BROTHER B] Would you extend this rushee a bid?",
         "question_type": "Long"
     },
     {
-        "question": "[BROTHER A - Other Brother] Why or Why Not?",
+        "question": "[BROTHER B] Why or Why Not?",
         "question_type": "Long"
     }
 ]

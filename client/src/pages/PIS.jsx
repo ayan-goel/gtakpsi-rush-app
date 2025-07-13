@@ -19,6 +19,8 @@ export default function PIS() {
     const [rushee, setRushee] = useState();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({}); // Stores answers for each question
+    const [brotherA, setBrotherA] = useState({ firstName: '', lastName: '' });
+    const [brotherB, setBrotherB] = useState({ firstName: '', lastName: '' });
 
     const navigate = useNavigate();
 
@@ -84,33 +86,46 @@ export default function PIS() {
 
     // Handle form submission
     const handleSubmit = async () => {
+        // Validation: At least Brother A must be filled out
+        if (!brotherA.firstName.trim() || !brotherA.lastName.trim()) {
+            toast.error("Brother A information is required", {
+                position: "top-center",
+                autoClose: 3000,
+                theme: "dark",
+            });
+            return;
+        }
+
         setLoading(true);
 
-        // Prepare the payload with all questions, including unanswered ones
-        const payload = questions.map((question) => ({
-            question: question.question,
-            answer: answers[question.question] || "", // Use an empty string for unanswered questions
-        }));
+        try {
+            // Register Brother A
+            await axios.post(`${api}/admin/pis-signup/${gtid}`, {
+                brother_first_name: brotherA.firstName.trim(),
+                brother_last_name: brotherA.lastName.trim()
+            });
 
-        await axios.post(`${api}/rushee/post-pis/${gtid}`, payload)
-            .then((response) => {
-                if (response.data.status === "success") {
-                    navigate(`/brother/rushee/${gtid}`);
-                } else {
-                    toast.error(`${response.data.message}`, {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "dark",
-                    });
-                }
-            })
-            .catch(() => {
-                toast.error("Some network error occurred", {
+            // Register Brother B if provided
+            if (brotherB.firstName.trim() && brotherB.lastName.trim()) {
+                await axios.post(`${api}/admin/pis-signup/${gtid}`, {
+                    brother_first_name: brotherB.firstName.trim(),
+                    brother_last_name: brotherB.lastName.trim()
+                });
+            }
+
+            // Prepare the payload with all questions, including unanswered ones
+            const payload = questions.map((question) => ({
+                question: question.question,
+                answer: answers[question.question] || "", // Use an empty string for unanswered questions
+            }));
+
+            // Submit PIS responses
+            const response = await axios.post(`${api}/rushee/post-pis/${gtid}`, payload);
+            
+            if (response.data.status === "success") {
+                navigate(`/brother/rushee/${gtid}`);
+            } else {
+                toast.error(`${response.data.message}`, {
                     position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -120,7 +135,20 @@ export default function PIS() {
                     progress: undefined,
                     theme: "dark",
                 });
+            }
+        } catch (error) {
+            console.error("Error submitting PIS:", error);
+            toast.error("An error occurred while submitting the PIS. Please try again.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
             });
+        }
 
         setLoading(false);
     };
@@ -164,6 +192,73 @@ export default function PIS() {
                     {/* PIS Questions */}
                     <div className="mt-10 max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg p-6">
                         <h1 className="text-3xl font-bold text-gray-200 mb-6">PIS Questions</h1>
+                        
+                        {/* Brother Information */}
+                        <div className="mb-8 p-4 bg-slate-600 rounded-lg">
+                            <h3 className="text-xl font-bold text-gray-200 mb-4">Brother Information</h3>
+                            
+                            {/* Show current assignments if they exist */}
+                            {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none") && (
+                                <div className="mb-4 p-3 bg-slate-700 rounded border-l-4 border-yellow-500">
+                                    <h4 className="text-yellow-300 font-semibold mb-2">Currently Assigned:</h4>
+                                    {rushee.pis_signup.first_brother_first_name !== "none" && (
+                                        <p className="text-gray-300">
+                                            Brother 1: {rushee.pis_signup.first_brother_first_name} {rushee.pis_signup.first_brother_last_name}
+                                        </p>
+                                    )}
+                                    {rushee.pis_signup.second_brother_first_name !== "none" && (
+                                        <p className="text-gray-300">
+                                            Brother 2: {rushee.pis_signup.second_brother_first_name} {rushee.pis_signup.second_brother_last_name}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                            
+                            {/* Brother A */}
+                            <div className="mb-4">
+                                <label className="block text-gray-200 font-semibold mb-2">Brother A:</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={brotherA.firstName}
+                                        onChange={(e) => setBrotherA({...brotherA, firstName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={brotherA.lastName}
+                                        onChange={(e) => setBrotherA({...brotherA, lastName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            
+                            {/* Brother B */}
+                            <div className="mb-4">
+                                <label className="block text-gray-200 font-semibold mb-2">Brother B:</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={brotherB.firstName}
+                                        onChange={(e) => setBrotherB({...brotherB, firstName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={brotherB.lastName}
+                                        onChange={(e) => setBrotherB({...brotherB, lastName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        
                         {questions.length > 0 ? (
                             questions.map((question, idx) => (
                                 <div key={idx} className="mb-6">
@@ -226,7 +321,12 @@ export default function PIS() {
 
                         <button
                             onClick={handleSubmit}
-                            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-200"
+                            disabled={!brotherA.firstName.trim() || !brotherA.lastName.trim()}
+                            className={`w-full py-3 rounded-lg transition duration-200 ${
+                                brotherA.firstName.trim() && brotherA.lastName.trim()
+                                    ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
+                                    : 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                            }`}
                         >
                             Submit Answers
                         </button>
