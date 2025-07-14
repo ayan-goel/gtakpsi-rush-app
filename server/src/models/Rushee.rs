@@ -34,7 +34,7 @@ pub struct PisResponse {
     pub answer: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Comment {
     pub brother_id: String,
     pub brother_name: String,

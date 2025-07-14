@@ -26,6 +26,7 @@ import AddPIS from './pages/AddPIS';
 import PISDashboard from './pages/PISDashboard';
 import NotFound from './pages/404';
 import SuccessPage from './components/AttendanceComponents/SuccessPage';
+import Comments from './pages/Comments';
 
 function App() {
 
@@ -49,6 +50,7 @@ function App() {
           <Route path='/rushee/:gtid/:link' element={<RusheePage/>} />
           <Route path='/pis/:gtid' element={<PIS/>} />
           <Route path='/attendance' element={<Attendance/>} />
+          <Route path='/comments' element={<Comments />} />
           {/* <Route path='/brother/pis' element={<BrotherPIS/>} />
           <Route path='/brother/dashboard' element={<PISDashboard/>} /> */}
           <Route path='*' element={<NotFound/>} />
