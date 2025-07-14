@@ -12,18 +12,6 @@
         "question_type": "MC"
     },
     {
-        "question": "GROUP ACTIVITY QUESTION [Brother A]",
-        "question_type": "Long"
-    },
-    {
-        "question": "GROUP ACTIVITY QUESTION [Brother B]",
-        "question_type": "Long"
-    },
-    {
-        "question": "GROUP ACTIVITY QUESTION [Brother C]",
-        "question_type": "Long"
-    },
-    {
         "question": "Tell me/us about yourself?",
         "question_type": "Long"
     },
@@ -84,6 +72,18 @@
         "question_type": "Long"
     },
     {
+        "question": "GROUP ACTIVITY QUESTION [Brother A]",
+        "question_type": "Long"
+    },
+    {
+        "question": "GROUP ACTIVITY QUESTION [Brother B]",
+        "question_type": "Long"
+    },
+    {
+        "question": "GROUP ACTIVITY QUESTION [Brother C]",
+        "question_type": "Long"
+    },
+    {
         "question": "[BROTHER A] Would you extend this rushee a bid?",
         "question_type": "Long"
     },
@@ -97,6 +97,14 @@
     },
     {
         "question": "[BROTHER B] Why or Why Not?",
+        "question_type": "Long"
+    },
+    {
+        "question": "[BROTHER C] Would you extend this rushee a bid?",
+        "question_type": "Long"
+    },
+    {
+        "question": "[BROTHER C] Why or Why Not?",
         "question_type": "Long"
     }
 ]
