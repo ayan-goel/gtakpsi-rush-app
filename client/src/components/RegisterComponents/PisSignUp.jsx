@@ -77,7 +77,20 @@ export default function PisSignUp(props) {
                                 The PIS is an interview to get to know a little more about you
                                 outside of a rush setting.
                             </h1>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                            
+                            {/* Warning message for Wednesday slots */}
+                            <div className="mb-6 p-4 bg-yellow-900 border border-yellow-600 rounded-lg max-w-4xl mx-auto">
+                                <div className="flex items-center gap-2 text-yellow-200">
+                                    <span className="text-yellow-400 text-xl">⚠️</span>
+                                    <p className="text-sm">
+                                        <strong>Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to.</strong> 
+                                        If you must, please email <a href="mailto:vmiriyapalli@gatech.edu" className="text-yellow-300 underline">vmiriyapalli@gatech.edu</a> with a reason as to why and she will schedule you between 8:00 PM and 10:15 PM.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex justify-center">
+                                <div className="flex gap-8 justify-center items-start max-w-7xl">
                                 {[...days.entries()]
                                     .filter(([day]) => {
                                         // Exclude Monday
@@ -87,12 +100,12 @@ export default function PisSignUp(props) {
                                     .map(([day, timeslots]) => (
                                         <div
                                             key={day}
-                                            className="bg-gray-800 shadow-lg rounded-lg p-4"
+                                            className="bg-gray-800 shadow-lg rounded-lg p-4 flex-shrink-0 min-w-0"
                                         >
                                             <h2 className="text-xl font-semibold text-center mb-4">
                                                 {day}
                                             </h2>
-                                            <div className="flex flex-wrap gap-2 justify-center">
+                                            <div className="grid grid-cols-6 gap-2 max-w-2xl justify-items-center">
                                                 {timeslots.map((slot, index) => (
                                                     <button
                                                         key={index}
@@ -122,6 +135,7 @@ export default function PisSignUp(props) {
                                             </div>
                                         </div>
                                     ))}
+                            </div>
                             </div>
                             {props.selectedSlot && (
                                 <div className="mt-6 text-center text-green-500">
