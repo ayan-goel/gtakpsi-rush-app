@@ -83,7 +83,7 @@ export default function PisSignUp(props) {
                                 <div className="flex items-center gap-2 text-yellow-200">
                                     <span className="text-yellow-400 text-xl">⚠️</span>
                                     <p className="text-sm">
-                                        <strong>Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to.</strong> 
+                                        <strong>Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to. </strong> 
                                         If you must, please email <a href="mailto:vmiriyapalli@gatech.edu" className="text-yellow-300 underline">vmiriyapalli@gatech.edu</a> with a reason as to why and she will schedule you between 8:00 PM and 10:15 PM.
                                     </p>
                                 </div>
