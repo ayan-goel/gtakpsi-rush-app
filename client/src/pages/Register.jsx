@@ -182,7 +182,7 @@ export default function Register() {
 
             // Prepare the upload parameters
             uploadParams = {
-                Bucket: "rush-app-pictures", // S3 bucket name
+                Bucket: "rush-app-photos", // S3 bucket name
                 Key: s3Key, // File name
                 Body: base64ToBlob(image), // File content
                 ContentType: image.type, // File MIME type (e.g., image/jpeg)
