@@ -13,7 +13,6 @@ import PisSignUp from './components/RegisterComponents/PisSignUp';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import BidCommitteeDashboard from './pages/BidCommitteeDashboard';
-import GTIDSearch from './pages/GTIDSearch';
 import RusheeZoom from './pages/RusheeZoom';
 import RusheePage from './pages/RusheePage';
 import PIS from './pages/PIS';
@@ -43,7 +42,6 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/dashboard' element={<Dashboard/>} />
           <Route path='/bid-committee' element={<BidCommitteeDashboard/>} />
-          <Route path='/gtid-search' element={<GTIDSearch/>} />
           <Route path='/brother/rushee/:gtid' element={<RusheeZoom/>} />
           <Route path='/error/:title/:description' element={<MyError/>} />
           <Route path='/admin' element={<Admin/>} />
