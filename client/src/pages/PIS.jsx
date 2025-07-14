@@ -3,6 +3,8 @@ import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import VoiceRecorder from "../components/VoiceRecorder";
 import axios from "axios";
+import CommentWarning from "../components/CommentWarning";
+import { validateComment, generateWarnings } from "../js/speculativeWordBank";
 
 import { verifyUser } from "../js/verifications";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +21,7 @@ export default function PIS() {
     const [rushee, setRushee] = useState();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({}); // Stores answers for each question
+    const [answerWarnings, setAnswerWarnings] = useState({}); // Stores warnings for each answer
     const [brotherA, setBrotherA] = useState({ firstName: '', lastName: '' });
     const [brotherB, setBrotherB] = useState({ firstName: '', lastName: '' });
 
@@ -82,6 +85,24 @@ export default function PIS() {
             ...prev,
             [question]: answer,
         }));
+        
+        // Validate answer for speculative language and rushee names
+        if (rushee && answer) {
+            const validationResult = validateComment(answer, rushee.first_name, rushee.last_name);
+            const warnings = generateWarnings(validationResult);
+            
+            setAnswerWarnings((prev) => ({
+                ...prev,
+                [question]: warnings
+            }));
+        } else {
+            // Clear warnings if no answer
+            setAnswerWarnings((prev) => {
+                const newWarnings = { ...prev };
+                delete newWarnings[question];
+                return newWarnings;
+            });
+        }
     };
 
     // Handle form submission
@@ -94,6 +115,21 @@ export default function PIS() {
                 theme: "dark",
             });
             return;
+        }
+
+        // Check for speculative language warnings
+        const hasWarnings = Object.values(answerWarnings).some(warnings => warnings && warnings.length > 0);
+        if (hasWarnings) {
+            toast.warning("Some answers contain potentially problematic language. Please review before submitting.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
         }
 
         setLoading(true);
@@ -311,6 +347,22 @@ export default function PIS() {
                                                     }}
                                                 />
                                             </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Show warnings for this answer */}
+                                    {answerWarnings[question.question] && answerWarnings[question.question].length > 0 && (
+                                        <div className="mt-2">
+                                            <CommentWarning 
+                                                warnings={answerWarnings[question.question]} 
+                                                onDismiss={(index) => {
+                                                    const newWarnings = answerWarnings[question.question].filter((_, i) => i !== index);
+                                                    setAnswerWarnings((prev) => ({
+                                                        ...prev,
+                                                        [question.question]: newWarnings
+                                                    }));
+                                                }}
+                                            />
                                         </div>
                                     )}
                                 </div>

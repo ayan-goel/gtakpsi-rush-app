@@ -6,6 +6,8 @@ import dayjs from 'dayjs';
 import Navbar from "../components/Navbar";
 import { verifyUser } from "../js/verifications";
 import Loader from "../components/Loader";
+import CommentWarning from "../components/CommentWarning";
+import { validateComment, generateWarnings } from "../js/speculativeWordBank";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -33,6 +35,8 @@ export default function RusheeZoom() {
     const [rushee, setRushee] = useState();
     const [isAddingComment, setIsAddingComment] = useState(false);
     const [newComment, setNewComment] = useState("");
+    const [commentWarnings, setCommentWarnings] = useState([]);
+    const [editCommentWarnings, setEditCommentWarnings] = useState([]);
     const [ratings, setRatings] = useState({
         "Why AKPsi": null,
         "1:1 Interactions": null,
@@ -110,6 +114,7 @@ export default function RusheeZoom() {
 
     const handleAddComment = () => {
         setIsAddingComment(true);
+        setCommentWarnings([]);
     };
 
     const handleRatingChange = (field, value) => {
@@ -119,7 +124,45 @@ export default function RusheeZoom() {
         });
     };
 
+    const validateNewComment = (commentText) => {
+        if (!rushee) return;
+        
+        const validationResult = validateComment(commentText, rushee.first_name, rushee.last_name);
+        const warnings = generateWarnings(validationResult);
+        setCommentWarnings(warnings);
+    };
+
+    const validateEditComment = (commentText) => {
+        if (!rushee) return;
+        
+        const validationResult = validateComment(commentText, rushee.first_name, rushee.last_name);
+        const warnings = generateWarnings(validationResult);
+        setEditCommentWarnings(warnings);
+    };
+
     const handleSubmitComment = async () => {
+        // Validate comment before submission
+        if (!rushee) return;
+        
+        const validationResult = validateComment(newComment, rushee.first_name, rushee.last_name);
+        
+        if (validationResult.hasWarnings) {
+            const warnings = generateWarnings(validationResult);
+            setCommentWarnings(warnings);
+            
+            // Show warning toast but allow submission
+            toast.warning("Comment contains potentially problematic language. Please review before submitting.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+
         setLoading(true)
 
         const actualRatings = []
@@ -181,6 +224,7 @@ export default function RusheeZoom() {
 
         // Reset the form after submission
         setNewComment("");
+        setCommentWarnings([]);
         setRatings({
             "Professionalism": null,
             "Goatedness": null,
@@ -203,11 +247,34 @@ export default function RusheeZoom() {
     const handleEditComment = (comment) => {
         setEditingCommentId(comment.comment); // Track the comment being edited
         setEditedCommentText(comment.comment); // Pre-populate with the existing comment text
+        setEditCommentWarnings([]); // Clear previous warnings
     };
 
     const handleSubmitEdit = async (comment) => {
 
         console.log(comment)
+
+        // Validate edited comment before submission
+        if (!rushee) return;
+        
+        const validationResult = validateComment(editedCommentText, rushee.first_name, rushee.last_name);
+        
+        if (validationResult.hasWarnings) {
+            const warnings = generateWarnings(validationResult);
+            setEditCommentWarnings(warnings);
+            
+            // Show warning toast but allow submission
+            toast.warning("Edited comment contains potentially problematic language. Please review before submitting.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
 
         setLoading(true)
         const payload = {
@@ -260,6 +327,7 @@ export default function RusheeZoom() {
 
         setEditingCommentId(null); // Reset editing state
         setEditedCommentText("");
+        setEditCommentWarnings([]); // Clear warnings
         setLoading(false)
 
     }
@@ -558,8 +626,19 @@ export default function RusheeZoom() {
                                             className="w-full p-2 bg-slate-700 text-gray-200 rounded-lg mb-4"
                                             placeholder="Add your comment..."
                                             value={newComment}
-                                            onChange={(e) => setNewComment(e.target.value)}
+                                            onChange={(e) => {
+                                                setNewComment(e.target.value);
+                                                validateNewComment(e.target.value);
+                                            }}
                                         ></textarea>
+                                        
+                                        <CommentWarning 
+                                            warnings={commentWarnings} 
+                                            onDismiss={(index) => {
+                                                const newWarnings = commentWarnings.filter((_, i) => i !== index);
+                                                setCommentWarnings(newWarnings);
+                                            }}
+                                        />
 
                                         {ratingFields.map((field) => (
                                             <div key={field} className="mb-4">
@@ -644,8 +723,20 @@ export default function RusheeZoom() {
                                                     <textarea
                                                         className="w-full p-2 bg-slate-700 text-gray-200 rounded-lg mb-4"
                                                         value={editedCommentText}
-                                                        onChange={(e) => setEditedCommentText(e.target.value)}
+                                                        onChange={(e) => {
+                                                            setEditedCommentText(e.target.value);
+                                                            validateEditComment(e.target.value);
+                                                        }}
                                                     ></textarea>
+                                                    
+                                                    <CommentWarning 
+                                                        warnings={editCommentWarnings} 
+                                                        onDismiss={(index) => {
+                                                            const newWarnings = editCommentWarnings.filter((_, i) => i !== index);
+                                                            setEditCommentWarnings(newWarnings);
+                                                        }}
+                                                    />
+                                                    
                                                     <button
                                                         onClick={() => handleSubmitEdit(comment)}
                                                         className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
