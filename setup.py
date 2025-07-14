@@ -16,10 +16,10 @@ import os
 import requests
 import boto3
 
-# Restrict script from running between January 26th and February 1st
+# Restrict script from running between September 1st and September 12th
 current_date = datetime.now()
-if datetime(current_date.year, 1, 26) <= current_date <= datetime(current_date.year, 2, 1):
-    print("This script cannot be run between January 26th and February 1st. [Spring 2025 Rush]")
+if datetime(current_date.year, 9, 1) <= current_date <= datetime(current_date.year, 9, 12):
+    print("This script cannot be run between September 1st and September 12th. [Spring 2025 Rush]")
     exit()
 
 # Load environment variables from .env file
@@ -104,7 +104,7 @@ with open("pis_timeslots.json", "r") as file:
             if response.json().get("status") == "error":
                 errors.append(response.json().get("message"))
         else:
-            errors.append(f"Some network error occurred while adding PIS Timeslot at {data[i]["time"]}")
+            errors.append(f"Some network error occurred while adding PIS Timeslot at {data[i]['time']}")
 
 
 # add rush nights
@@ -119,7 +119,7 @@ with open("rush_nights.json", "r") as file:
             if response.json().get("status") == "error":
                 errors.append(response.json().get("message"))
         else:
-            errors.append(f"Some network error occurred while adding Rush Night {data[i]["name"]}")
+            errors.append(f"Some network error occurred while adding Rush Night {data[i]['name']}")
 
 with open("pis_questions.json", "r") as file:
 
@@ -132,7 +132,7 @@ with open("pis_questions.json", "r") as file:
             if response.json().get("status") == "error":
                 errors.append(response.json().get("message"))
         else:
-            errors.append(f"Some network error occurred while adding PIS Question {data[i]["question"]}")
+            errors.append(f"Some network error occurred while adding PIS Question {data[i]['question']}")
 
 
 if len(errors) > 0:

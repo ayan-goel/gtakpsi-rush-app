@@ -228,7 +228,7 @@ export default function Register() {
             major: majorVal,
             class: yearVal,
             pronouns: pronounsVal,
-            image_url: `https://rush-app-pictures.s3.us-east-1.amazonaws.com/${s3Key}`,
+            image_url: `https://rush-app-photos.s3.us-east-1.amazonaws.com/${s3Key}`,
             exposure: exposureVal,
             pis_meeting_id: "meeting123",
             pis_timeslot: selectedSlot.time, // ISO 8601 format
