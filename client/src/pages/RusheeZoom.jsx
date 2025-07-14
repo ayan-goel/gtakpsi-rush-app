@@ -562,6 +562,9 @@ export default function RusheeZoom() {
                                 <p className="mt-2 text-slate-300">
                                     <strong>Brother 2:</strong> {rushee.pis_signup.second_brother_first_name} {rushee.pis_signup.second_brother_last_name}
                                 </p>
+                                <p className="mt-2 text-slate-300">
+                                    <strong>Brother 3:</strong> {rushee.pis_signup.third_brother_first_name} {rushee.pis_signup.third_brother_last_name}
+                                </p>
 
                                 {/* PIS Responses Section */}
                                 <div className="mt-6">

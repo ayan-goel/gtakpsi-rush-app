@@ -126,6 +126,8 @@ pub async fn signup(Json(payload): Json<IncomingRushee>) -> Result<Json<Value>, 
             first_brother_last_name: "none".to_string(),
             second_brother_first_name: "none".to_string(),
             second_brother_last_name: "none".to_string(),
+            third_brother_first_name: "none".to_string(),
+            third_brother_last_name: "none".to_string(),
         },
     };
 

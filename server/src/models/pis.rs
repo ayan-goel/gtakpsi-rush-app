@@ -30,6 +30,8 @@ pub struct PISSignup {
     pub first_brother_last_name: String,
     pub second_brother_first_name: String,
     pub second_brother_last_name: String,
+    pub third_brother_first_name: String,
+    pub third_brother_last_name: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

@@ -24,6 +24,7 @@ export default function PIS() {
     const [answerWarnings, setAnswerWarnings] = useState({}); // Stores warnings for each answer
     const [brotherA, setBrotherA] = useState({ firstName: '', lastName: '' });
     const [brotherB, setBrotherB] = useState({ firstName: '', lastName: '' });
+    const [brotherC, setBrotherC] = useState({ firstName: '', lastName: '' });
 
     const navigate = useNavigate();
 
@@ -149,6 +150,14 @@ export default function PIS() {
                 });
             }
 
+            // Register Brother C if provided
+            if (brotherC.firstName.trim() && brotherC.lastName.trim()) {
+                await axios.post(`${api}/admin/pis-signup/${gtid}`, {
+                    brother_first_name: brotherC.firstName.trim(),
+                    brother_last_name: brotherC.lastName.trim()
+                });
+            }
+
             // Prepare the payload with all questions, including unanswered ones
             const payload = questions.map((question) => ({
                 question: question.question,
@@ -234,7 +243,7 @@ export default function PIS() {
                             <h3 className="text-xl font-bold text-gray-200 mb-4">Brother Information</h3>
                             
                             {/* Show current assignments if they exist */}
-                            {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none") && (
+                            {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none" || rushee.pis_signup.third_brother_first_name !== "none") && (
                                 <div className="mb-4 p-3 bg-slate-700 rounded border-l-4 border-gray-500">
                                     <h4 className="text-gray-300 font-semibold mb-2">Currently Assigned:</h4>
                                     {rushee.pis_signup.first_brother_first_name !== "none" && (
@@ -245,6 +254,11 @@ export default function PIS() {
                                     {rushee.pis_signup.second_brother_first_name !== "none" && (
                                         <p className="text-gray-300">
                                             Brother 2: {rushee.pis_signup.second_brother_first_name} {rushee.pis_signup.second_brother_last_name}
+                                        </p>
+                                    )}
+                                    {rushee.pis_signup.third_brother_first_name !== "none" && (
+                                        <p className="text-gray-300">
+                                            Brother 3: {rushee.pis_signup.third_brother_first_name} {rushee.pis_signup.third_brother_last_name}
                                         </p>
                                     )}
                                 </div>
@@ -289,6 +303,27 @@ export default function PIS() {
                                         placeholder="Last Name"
                                         value={brotherB.lastName}
                                         onChange={(e) => setBrotherB({...brotherB, lastName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                    />
+                                </div>
+                            </div>
+                            
+                            {/* Brother C */}
+                            <div className="mb-4">
+                                <label className="block text-gray-200 font-semibold mb-2">Brother C:</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={brotherC.firstName}
+                                        onChange={(e) => setBrotherC({...brotherC, firstName: e.target.value})}
+                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={brotherC.lastName}
+                                        onChange={(e) => setBrotherC({...brotherC, lastName: e.target.value})}
                                         className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
                                     />
                                 </div>
