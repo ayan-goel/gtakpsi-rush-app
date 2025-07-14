@@ -235,8 +235,8 @@ export default function PIS() {
                             
                             {/* Show current assignments if they exist */}
                             {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none") && (
-                                <div className="mb-4 p-3 bg-slate-700 rounded border-l-4 border-yellow-500">
-                                    <h4 className="text-yellow-300 font-semibold mb-2">Currently Assigned:</h4>
+                                <div className="mb-4 p-3 bg-slate-700 rounded border-l-4 border-gray-500">
+                                    <h4 className="text-gray-300 font-semibold mb-2">Currently Assigned:</h4>
                                     {rushee.pis_signup.first_brother_first_name !== "none" && (
                                         <p className="text-gray-300">
                                             Brother 1: {rushee.pis_signup.first_brother_first_name} {rushee.pis_signup.first_brother_last_name}
