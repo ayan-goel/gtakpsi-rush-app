@@ -78,7 +78,7 @@ export default function RusheePage() {
         setLoading(true)
 
         const s3Client = new S3Client({
-            region: "us-east-1",
+            region: "us-east-2",
             credentials: {
                 accessKeyId: aws_access_key_id,
                 secretAccessKey: aws_secret_access_key,
@@ -103,7 +103,7 @@ export default function RusheePage() {
             const payload = [
                 {
                     "field": "image_url",
-                    "new_value": `https://rush-app-photos.s3.us-east-1.amazonaws.com/${s3Key}`,
+                    "new_value": `https://rush-app-photos.s3.us-east-2.amazonaws.com/${s3Key}`,
                 }
             ]
 

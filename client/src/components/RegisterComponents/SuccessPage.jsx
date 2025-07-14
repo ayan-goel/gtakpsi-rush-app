@@ -130,16 +130,16 @@ export default function SuccessPage({ title, description, link, gtid }) {
                 <p className="text-lg text-white mt-3 text-center max-w-xl">{description}</p>
 
                 {/* Link Box with Copy Button */}
-                <div className="mt-8 w-full max-w-md p-4 bg-white shadow-lg rounded-lg flex items-center justify-between border-2 border-gray-300">
+                <div className="mt-8 w-full max-w-md p-4 bg-white shadow-lg rounded-lg border-2 border-gray-300">
                     {/* Display the Link */}
-                    <div className="flex-grow">
-                        <a className="text-slate-800 font-medium">{`https://rush-app-2024.web.app/rushee/${gtid}/${link}`}</a>
+                    <div className="mb-4">
+                        <a className="text-slate-800 font-medium break-all">{`https://rush-app-2024.web.app/rushee/${gtid}/${link}`}</a>
                     </div>
 
                     {/* Copy Button */}
                     <button
                         onClick={handleCopy}
-                        className="bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 rounded focus:ring transform transition hover:scale-105 duration-300 ease-in-out"
+                        className="w-full bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 rounded focus:ring transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                         {copied ? "Copied!" : "Copy"}
                     </button>

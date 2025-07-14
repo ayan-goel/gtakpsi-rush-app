@@ -270,6 +270,18 @@ export default function Register() {
 
     }
 
+    // If we're on the success page (page 3) and not loading, render it fullscreen
+    if (page === 3 && !currLoading) {
+        return (
+            <SuccessPage
+                title={"Congrats! You've successfully registered for AKPsi Spring 2025 Rush."}
+                description={"If you need to reschedule your PIS, change your information, or update your picture, please use the link below."}
+                gtid={gtidVal}
+                link={accessCode}
+            />
+        );
+    }
+
     return (
         <div className="w-screen h-screen bg-slate-800 flex flex-col overflow-y-auto">
             <Navbar stripped={true} />
@@ -301,15 +313,7 @@ export default function Register() {
                             func={pis_submit}
                         /> : <div>
 
-                            {currLoading ? <Loader /> : <div>
-
-                                <SuccessPage
-                                    title={"Congrats! You've successfully registered for AKPsi Spring 2025 Rush."}
-                                    description={"If you need to reschedule your PIS, change your information, or update your picture, please use the link below."}
-                                    gtid={gtidVal}
-                                    link={accessCode}
-                                />
-                            </div>}
+                            {currLoading ? <Loader /> : null}
 
                         </div>}
                     </div>}
