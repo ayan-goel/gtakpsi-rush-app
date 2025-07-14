@@ -165,7 +165,7 @@ export default function Register() {
         setPage(3)
 
         const s3Client = new S3Client({
-            region: "us-east-1",
+            region: "us-east-2",
             credentials: {
                 accessKeyId: aws_access_key_id,
                 secretAccessKey: aws_secret_access_key,
@@ -228,7 +228,7 @@ export default function Register() {
             major: majorVal,
             class: yearVal,
             pronouns: pronounsVal,
-            image_url: `https://rush-app-photos.s3.us-east-1.amazonaws.com/${s3Key}`,
+            image_url: `https://rush-app-photos.s3.us-east-2.amazonaws.com/${s3Key}`,
             exposure: exposureVal,
             pis_meeting_id: "meeting123",
             pis_timeslot: selectedSlot.time, // ISO 8601 format
