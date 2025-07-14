@@ -12,6 +12,18 @@
         "question_type": "MC"
     },
     {
+        "question": "GROUP ACTIVITY QUESTION [Brother A]",
+        "question_type": "Long"
+    },
+    {
+        "question": "GROUP ACTIVITY QUESTION [Brother B]",
+        "question_type": "Long"
+    },
+    {
+        "question": "GROUP ACTIVITY QUESTION [Brother C]",
+        "question_type": "Long"
+    },
+    {
         "question": "Tell me/us about yourself?",
         "question_type": "Long"
     },
