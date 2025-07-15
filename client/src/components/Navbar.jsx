@@ -34,9 +34,6 @@ export default function Navbar(props) {
                                 <a href="/bid-committee" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white">Bid Committee</a>
                             </li>
                             <li>
-                                <a href="/gtid-search" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white">GTID Search</a>
-                            </li>
-                            <li>
                                 <Link to="/comments" className="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white">Comments</Link>
                             </li>
                             {/* <li>
