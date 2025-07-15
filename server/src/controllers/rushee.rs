@@ -319,7 +319,29 @@ pub async fn post_comment(
 
                             // update ratings
                             for rating in payload.ratings.iter() {
-                                // find the value...
+                                // Collect all ratings for this category from all comments
+                                let mut values = Vec::new();
+
+                                // Existing comments
+                                for comment in &rushee.comments {
+                                    if let Some(existing_rating) = comment.ratings.iter().find(|r| r.name == rating.name) {
+                                        if existing_rating.value == 0.0 || existing_rating.value == 5.0 {
+                                            values.push(existing_rating.value);
+                                        }
+                                    }
+                                }
+
+                                // Add the new rating (from the current payload)
+                                if rating.value == 0.0 || rating.value == 5.0 {
+                                    values.push(rating.value);
+                                }
+
+                                // Calculate the average (out of 5)
+                                let new_value = if !values.is_empty() {
+                                    values.iter().sum::<f32>() / values.len() as f32
+                                } else {
+                                    0.0
+                                };
 
                                 let search_rating = rushee
                                     .ratings
@@ -327,27 +349,18 @@ pub async fn post_comment(
                                     .find(|r: &&Rating| rating.name == r.name);
 
                                 match search_rating {
-                                    Some(y) => {
-                                        // push the new value
-                                        let new_value = ((y.value
-                                            * (rushee.comments.len() as f32))
-                                            + rating.value)
-                                            / ((rushee.comments.len() as f32) + 1.0);
-
+                                    Some(_y) => {
+                                        // Update existing rating
                                         let filter = doc! {
                                             "gtid": id.clone(),
                                             "ratings.name": rating.name.clone(),
                                         };
-
-                                        // Build the update document
                                         let update = doc! {
                                             "$set": {
                                                 "ratings.$.value": new_value,
                                             },
                                         };
-
-                                        let update_result_try =
-                                            connection.update_one(filter, update).await;
+                                        let update_result_try = connection.update_one(filter, update).await;
 
                                         match update_result_try {
                                             Ok(_update_result) => {
@@ -362,28 +375,10 @@ pub async fn post_comment(
                                         }
                                     }
                                     None => {
-                                        let mut rating_bson;
-                                        let rating_bson_try = to_bson(&rating);
-
-                                        match rating_bson_try {
-                                            Ok(x) => {
-                                                rating_bson = x;
-                                            }
-                                            Err(err) => {
-                                                return Ok(Json(json!({
-                                                    "status": "error",
-                                                    "message": "couldn't make the pis response into a bson file"
-                                                })))
-                                            }
-                                        }
-
+                                        // **This is the important part for an empty array or new category**
                                         let filter = doc! {"gtid": id.clone()};
-                                        let update = doc! {"$push" : {
-                                            "ratings": rating_bson,
-                                        }};
-
-                                        let update_result_try =
-                                            connection.update_one(filter, update).await;
+                                        let update = doc! {"$push": {"ratings": {"name": rating.name.clone(), "value": new_value}}};
+                                        let update_result_try = connection.update_one(filter, update).await;
 
                                         match update_result_try {
                                             Ok(_update_result) => {
