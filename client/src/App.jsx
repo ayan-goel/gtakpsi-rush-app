@@ -63,14 +63,14 @@ function App() {
             href="mailto:vmiriyapalli@gatech.edu"
             className="text-blue-300 no-underline hover:underline"
           >
-            malenpatel@gatech.edu
+            vmiriyapalli@gatech.edu
           </a>
           {" "}or{" "} 
           <a
             href="mailto:kajmera6@gatech.edu"
             className="text-blue-300 no-underline hover:underline"
           >
-            dchatterjea6@gatech.edu
+            kajmera6@gatech.edu
           </a>
         </div>
       </BrowserRouter>
