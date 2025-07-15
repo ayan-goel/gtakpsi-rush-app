@@ -68,6 +68,13 @@ export default function RusheeZoom() {
         "Professionalism",
     ];
 
+    // Function to check if current user has already posted a comment
+    const hasUserPostedComment = () => {
+        if (!rushee || !user) return false;
+        const currentUserName = user.firstname + " " + user.lastname;
+        return rushee.comments.some(comment => comment.brother_name === currentUserName);
+    };
+
     useEffect(() => {
 
         async function fetch() {
@@ -591,25 +598,26 @@ export default function RusheeZoom() {
                             </div>
 
                             {/* Section: Brothers who wrote comments */}
-                            <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6">
-                                <h2 className="text-xl font-semibold text-gray-200 mb-4">
-                                    Brothers Who Commented
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    {rushee.comments.map((comment, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="bg-slate-500 text-gray-200 px-3 py-1 rounded-lg
+                            {hasUserPostedComment() && (
+                                <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6">
+                                    <h2 className="text-xl font-semibold text-gray-200 mb-4">
+                                        Brothers Who Commented
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {rushee.comments.map((comment, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="bg-slate-500 text-gray-200 px-3 py-1 rounded-lg
                    hover:bg-slate-400 cursor-pointer
                    transform transition-all duration-200 ease-in-out
                    hover:-translate-y-1 hover:scale-105"
-                                        >
-                                            {comment.brother_name}
-                                        </div>
-                                    ))}
+                                            >
+                                                {comment.brother_name}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-
+                            )}
 
                             {/* Comments */}
                             <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg mt-6 p-6">
@@ -662,11 +670,6 @@ export default function RusheeZoom() {
                                                     <option value="" disabled>
                                                         Not Seen
                                                     </option>
-                                                    {/* {[...Array(6).keys()].map((value) => (
-                                                        <option key={value} value={value}>
-                                                            {value}
-                                                        </option>
-                                                    ))} */}
                                                     <option value={5}>Satisfactory</option>
                                                     <option value={0}>Unsatisfactory</option>
                                                 </select>
@@ -681,97 +684,106 @@ export default function RusheeZoom() {
                                         </button>
                                     </div>
                                 )}
-                                <div className="mt-4">
-                                    {rushee.comments.map((comment, idx) => (
-                                        <div
-                                            key={idx}
-                                            // Add this onClick to open the modal if the user clicks anywhere 
-                                            // except on the edit/delete icons.
-                                            onClick={() => setSelectedComment(comment)}
-                                            className="relative mt-4 bg-slate-600 p-4 rounded-lg
-               hover:bg-slate-500 cursor-pointer transition duration-200 border border-gray-500"
-                                        >
-                                            {/* Buttons in the top-right corner */}
+                                
+                                {/* Show comments only if user has posted their own comment */}
+                                {hasUserPostedComment() && (
+                                    <div className="mt-4">
+                                        {rushee.comments.map((comment, idx) => (
                                             <div
-                                                className={
-                                                    user.firstname + " " + user.lastname === comment.brother_name &&
-                                                        editingCommentId !== comment.comment
-                                                        ? "absolute top-2 right-2 flex space-x-2"
-                                                        : "hidden"
-                                                }
+                                                key={idx}
+                                                onClick={() => setSelectedComment(comment)}
+                                                className="relative mt-4 bg-slate-600 p-4 rounded-lg
+               hover:bg-slate-500 cursor-pointer transition duration-200 border border-gray-500"
                                             >
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();  // Prevent click from opening modal
-                                                        handleEditComment(comment);
-                                                    }}
-                                                    className="text-gray-400 hover:text-blue-500 text-xl"
+                                                {/* Buttons in the top-right corner */}
+                                                <div
+                                                    className={
+                                                        user.firstname + " " + user.lastname === comment.brother_name &&
+                                                            editingCommentId !== comment.comment
+                                                            ? "absolute top-2 right-2 flex space-x-2"
+                                                            : "hidden"
+                                                    }
                                                 >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();  // Prevent click from opening modal
-                                                        handleDeleteComment(comment);
-                                                    }}
-                                                    className="text-gray-400 hover:text-red-500 text-xl"
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </div>
-
-                                            {/* Comment Content or Edit Field */}
-                                            {editingCommentId === comment.comment ? (
-                                                <div>
-                                                    <textarea
-                                                        className="w-full p-2 bg-slate-700 text-gray-200 rounded-lg mb-4"
-                                                        value={editedCommentText}
-                                                        onChange={(e) => {
-                                                            setEditedCommentText(e.target.value);
-                                                            validateEditComment(e.target.value);
-                                                        }}
-                                                    ></textarea>
-                                                    
-                                                    <CommentWarning 
-                                                        warnings={editCommentWarnings} 
-                                                        onDismiss={(index) => {
-                                                            const newWarnings = editCommentWarnings.filter((_, i) => i !== index);
-                                                            setEditCommentWarnings(newWarnings);
-                                                        }}
-                                                    />
-                                                    
                                                     <button
-                                                        onClick={() => handleSubmitEdit(comment)}
-                                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditComment(comment);
+                                                        }}
+                                                        className="text-gray-400 hover:text-blue-500 text-xl"
                                                     >
-                                                        Submit
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteComment(comment);
+                                                        }}
+                                                        className="text-gray-400 hover:text-red-500 text-xl"
+                                                    >
+                                                        <FaTrash />
                                                     </button>
                                                 </div>
-                                            ) : (
-                                                <div>
-                                                    <Badges text={comment.night.name} />
-                                                    <div className="h-1" />
-                                                    <p>
-                                                        <strong className="text-gray-200">{comment.brother_name}:</strong> {comment.comment}
-                                                    </p>
+
+                                                {/* Comment Content or Edit Field */}
+                                                {editingCommentId === comment.comment ? (
+                                                    <div>
+                                                        <textarea
+                                                            className="w-full p-2 bg-slate-700 text-gray-200 rounded-lg mb-4"
+                                                            value={editedCommentText}
+                                                            onChange={(e) => {
+                                                                setEditedCommentText(e.target.value);
+                                                                validateEditComment(e.target.value);
+                                                            }}
+                                                        ></textarea>
+                                                        
+                                                        <CommentWarning 
+                                                            warnings={editCommentWarnings} 
+                                                            onDismiss={(index) => {
+                                                                const newWarnings = editCommentWarnings.filter((_, i) => i !== index);
+                                                                setEditCommentWarnings(newWarnings);
+                                                            }}
+                                                        />
+                                                        
+                                                        <button
+                                                            onClick={() => handleSubmitEdit(comment)}
+                                                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                                        >
+                                                            Submit
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <Badges text={comment.night.name} />
+                                                        <div className="h-1" />
+                                                        <p>
+                                                            <strong className="text-gray-200">{comment.brother_name}:</strong> {comment.comment}
+                                                        </p>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {comment.ratings.map((rating, rIdx) => (
+                                                        <span
+                                                            key={rIdx}
+                                                            className="bg-slate-500 text-gray-200 px-2 py-1 rounded text-sm"
+                                                        >
+                                                            {rating.name}: {rating.value == 5 ? "Satisfactory" : "Unsatisfactory"}
+                                                        </span>
+                                                    ))}
                                                 </div>
-                                            )}
-
-                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                {comment.ratings.map((rating, rIdx) => (
-                                                    <span
-                                                        key={rIdx}
-                                                        className="bg-slate-500 text-gray-200 px-2 py-1 rounded text-sm"
-                                                    >
-                                                        {rating.name}: {rating.value == 5 ? "Satisfactory" : "Unsatisfactory"}
-                                                    </span>
-                                                ))}
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                )}
 
-
+                                {/* Show message if user hasn't posted a comment yet */}
+                                {!hasUserPostedComment() && (
+                                    <div className="mt-4 p-4 bg-slate-600 rounded-lg border border-gray-500">
+                                        <p className="text-gray-300 text-center">
+                                            Post your first comment to see other brothers' comments.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Attendance */}
