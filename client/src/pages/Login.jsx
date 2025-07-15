@@ -65,7 +65,7 @@ export default function Login() {
                                         <input ref={password} type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-amber-600 focus:border-amber-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                    <Link to='/user/recover'><p class="text-sm font-medium text-amber-600 hover:underline dark:text-amber-500">Forgot Password?</p></Link>
+                                    <Link to='https://gtakpsi-points-tracker.web.app/user/recover'><p class="text-sm font-medium text-amber-600 hover:underline dark:text-amber-500">Forgot Password?</p></Link>
                                     </div>
                                     <button onClick={async () => {
                                         const x = await login({
