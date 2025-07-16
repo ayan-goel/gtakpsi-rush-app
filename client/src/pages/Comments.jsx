@@ -65,15 +65,17 @@ const Comments = () => {
                     <h2 className="text-xl font-bold text-white">
                       {entry.rushee.first_name} {entry.rushee.last_name}
                     </h2>
-                    {entry.comments[0]?.night?.name && (
-                      <span className="bg-gradient-to-r from-sky-700 to-amber-600 text-white text-xs font-semibold px-2 py-1 rounded ml-2">
-                        {entry.comments[0].night.name}
-                      </span>
-                    )}
                   </div>
                   {entry.comments.map((comment, cidx) => (
                     <div key={cidx} className="mb-4">
-                      <p className="text-gray-200 mb-2">{comment.comment}</p>
+                      <div className="flex flex-row gap-2 items-center mb-2">
+                        <p className="text-gray-200 mb-0">{comment.comment}</p>
+                        {comment.night?.name && (
+                          <span className="bg-gradient-to-r from-sky-700 to-amber-600 text-white text-xs font-semibold px-2 py-1 rounded ml-2">
+                            {comment.night.name}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex flex-wrap gap-2 mb-2">
                         {comment.ratings && comment.ratings.map((rating, rIdx) => (
                           <span
