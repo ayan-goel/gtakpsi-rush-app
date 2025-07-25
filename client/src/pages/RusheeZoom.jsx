@@ -245,7 +245,7 @@ export default function RusheeZoom() {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(`https://rush-app-2024.web.app/rushee/${gtid}/${rushee.access_code}`).then(() => {
+        navigator.clipboard.writeText(`https://www.gtakpsi-rush.com/rushee/${gtid}/${rushee.access_code}`).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
         });

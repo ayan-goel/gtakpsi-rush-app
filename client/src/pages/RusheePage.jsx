@@ -274,7 +274,7 @@ export default function RusheePage() {
             const response = await axios.post(`${api}/rushee/update-rushee/${gtid}`, payload);
 
             if (response.data.status === "success") {
-                window.location.reload(`https://rush-app-2024.web.app/rushee/${rushee.gtid}/${link}`)
+                window.location.reload(`https://www.gtakpsi-rush.com/rushee/${rushee.gtid}/${link}`)
             } else {
                 toast.error(`${response.data.message}`, {
                     position: "top-center",
