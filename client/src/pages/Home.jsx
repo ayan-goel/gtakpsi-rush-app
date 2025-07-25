@@ -113,7 +113,7 @@ export default function Home() {
             {/* Content Overlay */}
             <div className="absolute text-center inset-0 flex flex-col items-center justify-center z-10">
                 <h1 className="text-6xl text-white font-extrabold mb-4">
-                    Welcome to AKPsi Rush
+                    Welcome to AKPsi Rush.
                 </h1>
                 <p className="text-2xl text-gray-200 mb-6">
                     Register for GT AKPsi Fall 2025 Rush below!
