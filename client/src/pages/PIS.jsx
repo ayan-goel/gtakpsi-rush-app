@@ -236,7 +236,16 @@ export default function PIS() {
 
                     {/* PIS Questions */}
                     <div className="mt-10 max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg p-6">
-                        <h1 className="text-3xl font-bold text-gray-200 mb-6">PIS Questions</h1>
+                        <h1 className="text-3xl font-bold text-gray-200 mb-6">PIS Questions </h1>
+                        
+                        {/* Disclaimer Message */}
+                        <div className="mb-6 p-4 bg-amber-900/20 border border-amber-600/50 rounded-lg">
+                            <p className="text-amber-200 text-sm">
+                                <strong>Note:</strong> Only the brother who does the main interview should submit this form. 
+                                The comments from the other two brothers should be taken from a shared Google Doc. If multiple people submit
+                                the form, the comments there before will be deleted. 
+                            </p>
+                        </div>
                         
                         {/* Brother Information */}
                         <div className="mb-8 p-4 bg-slate-600 rounded-lg">
