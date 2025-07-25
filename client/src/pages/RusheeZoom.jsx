@@ -726,10 +726,11 @@ export default function RusheeZoom() {
 
                                                 {/* Comment Content or Edit Field */}
                                                 {editingCommentId === comment.comment ? (
-                                                    <div>
+                                                    <div onClick={(e) => e.stopPropagation()}>
                                                         <textarea
                                                             className="w-full p-2 bg-slate-700 text-gray-200 rounded-lg mb-4"
                                                             value={editedCommentText}
+                                                            onClick={(e) => e.stopPropagation()}
                                                             onChange={(e) => {
                                                                 setEditedCommentText(e.target.value);
                                                                 validateEditComment(e.target.value);
@@ -745,7 +746,10 @@ export default function RusheeZoom() {
                                                         />
                                                         
                                                         <button
-                                                            onClick={() => handleSubmitEdit(comment)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleSubmitEdit(comment);
+                                                            }}
                                                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                                                         >
                                                             Submit
