@@ -606,13 +606,17 @@ export default function RusheePage() {
                                 {/* Pronouns */}
                                 <div>
                                     <label className="block text-gray-200 font-semibold mb-1">Pronouns</label>
-                                    <input
-                                        type="text"
+                                    <select
                                         name="pronouns"
                                         value={rushee.pronouns}
                                         onChange={handleChange}
                                         className="w-full p-3 bg-slate-600 text-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-                                    />
+                                    >
+                                        <option value="">Select pronouns</option>
+                                        <option value="he/him">he/him</option>
+                                        <option value="she/her">she/her</option>
+                                        <option value="they/them">they/them</option>
+                                    </select>
                                 </div>
                             </div>
 

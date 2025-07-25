@@ -76,14 +76,6 @@
         "question_type": "Long"
     },
     {
-        "question": "Group Activity Comments [Brother B]",
-        "question_type": "Long"
-    },
-    {
-        "question": "Group Activity Comments [Brother C]",
-        "question_type": "Long"
-    },
-    {
         "question": "[BROTHER A] Would you extend this rushee a bid?",
         "question_type": "Long"
     },
@@ -92,11 +84,19 @@
         "question_type": "Long"
     },
     {
+        "question": "Group Activity Comments [Brother B]",
+        "question_type": "Long"
+    },
+    {
         "question": "[BROTHER B] Would you extend this rushee a bid?",
         "question_type": "Long"
     },
     {
         "question": "[BROTHER B] Why or Why Not?",
+        "question_type": "Long"
+    },
+    {
+        "question": "Group Activity Comments [Brother C]",
         "question_type": "Long"
     },
     {

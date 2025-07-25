@@ -116,7 +116,7 @@ export default function Home() {
                     Welcome to AKPsi Rush
                 </h1>
                 <p className="text-2xl text-gray-200 mb-6">
-                    Register for GT AKPsi Spring Rush below!
+                    Register for GT AKPsi Fall 2025 Rush below!
                 </p>
                 <div className="flex space-x-4">
                 <button onClick={() => {

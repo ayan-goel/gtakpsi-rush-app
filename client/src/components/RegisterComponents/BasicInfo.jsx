@@ -161,13 +161,16 @@ export default function BasicInfo(props) {
                         <label className="block uppercase tracking-wide text-gray-100 text-xs font-bold mb-2" htmlFor="grid-pronouns">
                             Pronouns
                         </label>
-                        <input
+                        <select
                             ref={props.pronouns}
                             className="appearance-none block w-full bg-gray-700 text-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:ring focus:ring-blue-400"
                             id="grid-pronouns"
-                            type="text"
-                            placeholder="she/her"
-                        />
+                        >
+                            <option value="">Select pronouns</option>
+                            <option value="he/him">he/him</option>
+                            <option value="she/her">she/her</option>
+                            <option value="they/them">they/them</option>
+                        </select>
                     </div>
                     <div className="w-full sm:w-1/2 px-3">
                         <label className="block uppercase tracking-wide text-gray-100 text-xs font-bold mb-2" htmlFor="grid-year">
