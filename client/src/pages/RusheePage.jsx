@@ -320,7 +320,7 @@ export default function RusheePage() {
                 <Loader />
             ) : (
 
-                <div className="min-h-screen bg-white py-10 animate-fade-in">
+                <div className="min-h-screen bg-white py-10">
                     {/* Modal */}
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -409,7 +409,7 @@ export default function RusheePage() {
                     )}
                     <div className="h-16" />
                     {/* Rushee Information */}
-                    <div className="max-w-4xl mx-auto card-apple animate-slide-up">
+                    <div className="max-w-4xl mx-auto card-apple">
                         <div className="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8 p-8">
                             {/* Image with Edit Icon */}
                             <div className="relative flex-shrink-0">
@@ -452,7 +452,7 @@ export default function RusheePage() {
                     </div>
 
 
-                    <div className="mt-8 max-w-4xl mx-auto card-apple animate-slide-up" style={{animationDelay: '0.2s'}}>
+                    <div className="mt-8 max-w-4xl mx-auto card-apple">
                         <div className="p-6">
                             <h2 className="text-apple-title1 font-light text-black mb-4">PIS Details</h2>
                             <div className="flex items-center gap-3">
@@ -472,12 +472,8 @@ export default function RusheePage() {
                     </div>
 
                     {/* Form Section */}
-                    <div className="mt-8 max-w-4xl mx-auto card-apple animate-slide-up mb-16" style={{animationDelay: '0.4s'}}>
+                    <div className="mt-8 max-w-4xl mx-auto card-apple mb-16">
                         <div className="p-8">
-                            <div className="text-center mb-8">
-                                <h1 className="text-apple-large font-light text-black mb-3">Edit Information</h1>
-                                <div className="w-16 h-0.5 bg-black mx-auto"></div>
-                            </div>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* Row 1: Name */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
