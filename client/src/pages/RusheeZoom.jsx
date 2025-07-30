@@ -419,7 +419,7 @@ export default function RusheeZoom() {
                                         {selectedComment.ratings.map((rating, rIdx) => (
                                             <span
                                                 key={rIdx}
-                                                className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-caption1 font-light"
+                                                className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-footnote font-light"
                                             >
                                                 {rating.name}: {rating.value == 5 ? "Satisfactory" : "Unsatisfactory"}
                                             </span>
@@ -667,7 +667,7 @@ export default function RusheeZoom() {
                                                     <div key={field}>
                                                         <label
                                                             htmlFor={field}
-                                                            className="block text-apple-footnote font-normal text-apple-gray-700 mb-2"
+                                                            className="block text-apple-body font-normal text-apple-gray-700 mb-2"
                                                         >
                                                             {field}
                                                         </label>
@@ -782,7 +782,7 @@ export default function RusheeZoom() {
                                                         {comment.ratings.map((rating, rIdx) => (
                                                             <span
                                                                 key={rIdx}
-                                                                className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-caption1 font-light"
+                                                                className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-footnote font-light"
                                                             >
                                                                 {rating.name}: {rating.value == 5 ? "Satisfactory" : "Unsatisfactory"}
                                                             </span>
