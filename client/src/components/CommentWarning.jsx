@@ -9,22 +9,22 @@ const CommentWarning = ({ warnings, onDismiss }) => {
     const getIcon = (type) => {
         switch (type) {
             case 'speculative':
-                return <FaComment className="text-yellow-400" />;
+                return <FaComment className="text-yellow-600" />;
             case 'name':
-                return <FaUser className="text-red-400" />;
+                return <FaUser className="text-red-600" />;
             default:
-                return <FaExclamationTriangle className="text-orange-400" />;
+                return <FaExclamationTriangle className="text-orange-600" />;
         }
     };
 
     const getWarningClass = (type) => {
         switch (type) {
             case 'speculative':
-                return 'border-yellow-500 bg-yellow-900/20';
+                return 'border-yellow-200 bg-yellow-50';
             case 'name':
-                return 'border-red-500 bg-red-900/20';
+                return 'border-red-200 bg-red-50';
             default:
-                return 'border-orange-500 bg-orange-900/20';
+                return 'border-orange-200 bg-orange-50';
         }
     };
 
@@ -33,20 +33,20 @@ const CommentWarning = ({ warnings, onDismiss }) => {
             {warnings.map((warning, index) => (
                 <div
                     key={index}
-                    className={`flex items-start p-3 rounded-lg border ${getWarningClass(warning.type)}`}
+                    className={`flex items-start p-4 rounded-apple border ${getWarningClass(warning.type)}`}
                 >
                     <div className="flex-shrink-0 mr-3 mt-0.5">
                         {getIcon(warning.type)}
                     </div>
                     <div className="flex-1">
-                        <p className="text-sm text-gray-200">
+                        <p className="text-apple-footnote text-black font-light">
                             {warning.message}
                         </p>
                     </div>
                     {onDismiss && (
                         <button
                             onClick={() => onDismiss(index)}
-                            className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-200"
+                            className="flex-shrink-0 ml-2 text-apple-gray-600 hover:text-black text-lg font-light"
                         >
                             ×
                         </button>

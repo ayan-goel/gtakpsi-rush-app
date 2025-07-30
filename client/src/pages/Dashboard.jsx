@@ -161,150 +161,150 @@ export default function Dashboard(props) {
                     {loading ? (
                         <Loader />
                     ) : (
-                        <div className="h-screen w-screen bg-slate-800 overflow-y-scroll">
+                        <div className="h-screen w-screen bg-white overflow-y-scroll">
                             <Navbar />
 
-                            <div className="pt-20 p-4"> {/* Adjusted padding to account for Navbar */}
-                                <div className="container mx-auto px-4">
-                                    {/* Header */}
-                                    <div className="mb-4">
-                                        <h1 className="text-3xl font-bold text-white">Rushee Dashboard</h1>
-                                    </div>
+                            <div className="pt-24 p-4 pb-20">
+                                <div className="container mx-auto px-4 max-w-7xl">
+                                    
 
-                                    {/* Search Bar */}
-                                    <input
-                                        type="text"
-                                        value={query}
-                                        onChange={handleSearch}
-                                        placeholder="Search rushees..."
-                                        className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-700 text-white placeholder-gray-400"
-                                    />
-
-                                    <div className="flex items-center justify-between mt-4">
-                                        {/* Filters Group (Aligned to the Left) */}
-                                        <div className="flex flex-wrap gap-4">
-                                            {/* Major Filter */}
-                                            <div className="relative">
-                                                <select
-                                                    value={selectedMajor}
-                                                    onChange={(e) => setSelectedMajor(e.target.value)}
-                                                    className="p-3 pr-8 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-700 text-white appearance-none"
-                                                >
-                                                    <option value="All">All Majors</option>
-                                                    {Array.from(new Set(rushees.map((rushee) => rushee.major))).map((major, idx) => (
-                                                        <option key={idx} value={major}>
-                                                            {major}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
-                                                    ▼
-                                                </span>
-                                            </div>
-
-                                            {/* Class Filter */}
-                                            <div className="relative">
-                                                <select
-                                                    value={selectedClass}
-                                                    onChange={(e) => setSelectedClass(e.target.value)}
-                                                    className="p-3 pr-8 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-700 text-white appearance-none"
-                                                >
-                                                    <option value="All">All Classes</option>
-                                                    {Array.from(new Set(rushees.map((rushee) => rushee.class))).map((classYear, idx) => (
-                                                        <option key={idx} value={classYear}>
-                                                            {classYear}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
-                                                    ▼
-                                                </span>
-                                            </div>
-
-                                            {/* Sorting Dropdown */}
-                                            <div className="relative">
-                                                <select
-                                                    value={selectedSort}
-                                                    onChange={(e) => setSelectedSort(e.target.value)}
-                                                    className="p-3 pr-8 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-slate-700 text-white appearance-none"
-                                                >
-                                                    <option value="none">No Sorting</option>
-                                                    <option value="firstName">Sort by First Name</option>
-                                                    <option value="lastName">Sort by Last Name</option>
-                                                </select>
-                                                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
-                                                    ▼
-                                                </span>
-                                            </div>
+                                    {/* Search and Filters */}
+                                    <div className="card-apple p-6 mb-6">
+                                        {/* Search Bar */}
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                value={query}
+                                                onChange={handleSearch}
+                                                placeholder="Search by name, email, major, or GTID..."
+                                                className="input-apple text-apple-body"
+                                            />
                                         </div>
 
-                                        {/* Shuffle Button (Aligned to the Right) */}
-                                        <div onClick={() => {
-                                            const shuffled = shuffleArray(rushees);
-                                            setFilteredRushees(shuffled);
-                                        }}>
-                                            <Button text={"Shuffle Rushees"} />
+                                        {/* Filters */}
+                                        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between">
+                                            <div className="flex flex-wrap gap-3">
+                                                {/* Major Filter */}
+                                                <div>
+                                                    <select
+                                                        value={selectedMajor}
+                                                        onChange={(e) => setSelectedMajor(e.target.value)}
+                                                        className="input-apple text-apple-body"
+                                                    >
+                                                        <option value="All">All Majors</option>
+                                                        {Array.from(new Set(rushees.map((rushee) => rushee.major))).map((major, idx) => (
+                                                            <option key={idx} value={major}>
+                                                                {major}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+
+                                                {/* Class Filter */}
+                                                <div>
+                                                    <select
+                                                        value={selectedClass}
+                                                        onChange={(e) => setSelectedClass(e.target.value)}
+                                                        className="input-apple text-apple-body"
+                                                    >
+                                                        <option value="All">All Years</option>
+                                                        {Array.from(new Set(rushees.map((rushee) => rushee.class))).map((classYear, idx) => (
+                                                            <option key={idx} value={classYear}>
+                                                                {classYear}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+
+                                                {/* Sorting Dropdown */}
+                                                <div>
+                                                    <select
+                                                        value={selectedSort}
+                                                        onChange={(e) => setSelectedSort(e.target.value)}
+                                                        className="input-apple text-apple-body"
+                                                    >
+                                                        <option value="none">No Sorting</option>
+                                                        <option value="firstName">First Name</option>
+                                                        <option value="lastName">Last Name</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {/* Shuffle Button */}
+                                            <div className="mt-2 sm:mt-0">
+                                                <button
+                                                    onClick={() => {
+                                                        const shuffled = shuffleArray(rushees);
+                                                        setFilteredRushees(shuffled);
+                                                    }}
+                                                    className="btn-apple-secondary px-6 py-3 text-apple-body font-light"
+                                                >
+                                                    Shuffle
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                </div>
-
-                                <div className="container mx-auto px-4">
-                                    <div className="grid gap-6 mt-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                    {/* Rushee Cards Grid */}
+                                                                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                         {filteredRushees.map((rushee) => (
                                             <div
                                                 onClick={() => {
                                                     window.open(`/brother/rushee/${rushee.gtid}`, "_blank");
                                                 }}
                                                 key={rushee.id}
-                                                className="flex cursor-pointer flex-col bg-slate-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border-2 border-transparent hover:border-blue-500"
+                                                className="card-apple cursor-pointer hover:border-apple-gray-300 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                                             >
                                                 {/* Picture */}
                                                 <img
-                                                    className="w-full h-48 object-cover"
+                                                    className="w-full h-48 object-cover rounded-t-apple-2xl"
                                                     src={rushee.image_url}
                                                     alt={rushee.name}
                                                 />
 
                                                 {/* Content */}
-                                                <div className="flex flex-col flex-grow p-4">
-                                                    <div className="flex flex-row gap-4">
-
-                                                        <h2 className="text-xl font-bold text-white mb-2 truncate">
+                                                <div className="p-5">
+                                                    <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-3">
+                                                        <h2 className="text-apple-title1 font-normal text-black flex-1 leading-tight">
                                                             {rushee.name}
                                                         </h2>
-                                                        {rushee.attendance.map((event, idx) => (
-                                                            <Badges text={event.name} key={idx} />
-                                                        ))}
-
+                                                        <div className="flex flex-wrap gap-1">
+                                                            {rushee.attendance.map((event, idx) => (
+                                                                <Badges text={event.name} key={idx} />
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                    <p className="text-sm text-gray-400 mb-1 truncate">
-                                                        {rushee.email}
-                                                    </p>
-                                                    <p className="text-sm text-gray-400 mb-1 truncate">
-                                                        {rushee.major}
-                                                    </p>
-                                                    <p className="text-sm text-gray-400">GTID: {rushee.gtid}</p>
-                                                    <div className="flex flex-wrap gap-2 mt-2">
-                                                        {rushee.ratings.map((rating, rIdx) => (
-                                                            <span
-                                                                key={rIdx}
-                                                                className="bg-slate-500 text-gray-200 px-2 py-1 rounded text-sm"
-                                                            >
-                                                                {rating.name}: {((rating.value / 5) * 100).toFixed(2)}%
-                                                            </span>
-                                                        ))}
+                                                    
+                                                    <div className="space-y-1 mb-3">
+                                                        <p className="text-apple-footnote text-apple-gray-600 font-light truncate">
+                                                            {rushee.email}
+                                                        </p>
+                                                        <p className="text-apple-footnote text-apple-gray-600 font-light truncate">
+                                                            {rushee.major}
+                                                        </p>
+                                                        <p className="text-apple-footnote text-apple-gray-600 font-light">
+                                                            GTID: {rushee.gtid}
+                                                        </p>
                                                     </div>
+                                                    
+                                                    {rushee.ratings && rushee.ratings.length > 0 && (
+                                                        <div className="flex flex-wrap gap-1">
+                                                            {rushee.ratings.map((rating, rIdx) => (
+                                                                <span
+                                                                    key={rIdx}
+                                                                    className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-caption1 font-light"
+                                                                >
+                                                                    {rating.name}: {((rating.value / 5) * 100).toFixed(0)}%
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-
                             </div>
-
-                            <div className="h-10" />
-
                         </div>
                     )}
                 </div>

@@ -67,7 +67,7 @@ const VoiceRecorder = ({ onTranscription, disabled = false }) => {
       return `${baseClass} bg-red-500 hover:bg-red-600 shadow-lg animate-pulse`;
     }
     
-    return `${baseClass} bg-blue-500 hover:bg-blue-600 shadow-md hover:shadow-lg`;
+    return `${baseClass} bg-black hover:bg-apple-gray-800 shadow-md hover:shadow-lg`;
   };
 
   return (

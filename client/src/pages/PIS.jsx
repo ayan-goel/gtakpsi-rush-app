@@ -203,232 +203,249 @@ export default function PIS() {
             {loading ? (
                 <Loader />
             ) : (
-                <div className="w-screen h-screen bg-slate-800 overflow-y-scroll">
+                <div className="min-h-screen w-full bg-white overflow-y-auto">
                     <Navbar />
 
-                    <div className="h-20" />
-
-                    <div className="text-white max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg overflow-hidden">
-                        <div className="flex items-center space-x-6 p-6">
-                            <img
-                                src={rushee.image_url}
-                                alt={`${rushee.first_name} ${rushee.last_name}`}
-                                className="w-44 h-44 rounded-lg object-cover border-2 border-slate-600"
-                            />
-                            <div>
-                                <div className="flex flex-row gap-2 items-center">
-                                    <h1 className="text-3xl font-bold">
-                                        {rushee.first_name} {rushee.last_name}
-                                    </h1>
-                                    {rushee.attendance.map((event, idx) => (
-                                        <Badges text={event.name} key={idx} />
-                                    ))}
-                                </div>
-                                <p className="text-slate-300">Pronouns: {rushee.pronouns}</p>
-                                <p className="text-slate-300">Major: {rushee.major}</p>
-                                <p>Email: {rushee.email}</p>
-                                <p>Phone: {rushee.phone_number}</p>
-                                <p>Housing: {rushee.housing}</p>
-                                <p>GTID: {rushee.gtid}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* PIS Questions */}
-                    <div className="mt-10 max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg p-6">
-                        <h1 className="text-3xl font-bold text-gray-200 mb-6">PIS Questions </h1>
-                        
-                        {/* Disclaimer Message */}
-                        <div className="mb-6 p-4 bg-amber-900/20 border border-amber-600/50 rounded-lg">
-                            <p className="text-amber-200 text-sm">
-                                <strong>Note:</strong> Only the brother who does the main interview should submit this form. 
-                                The comments from the other two brothers should be taken from a shared Google Doc. If multiple people submit
-                                the form, the comments there before will be deleted. 
-                            </p>
-                        </div>
-                        
-                        {/* Brother Information */}
-                        <div className="mb-8 p-4 bg-slate-600 rounded-lg">
-                            <h3 className="text-xl font-bold text-gray-200 mb-4">Brother Information</h3>
-                            
-                            {/* Show current assignments if they exist */}
-                            {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none" || rushee.pis_signup.third_brother_first_name !== "none") && (
-                                <div className="mb-4 p-3 bg-slate-700 rounded border-l-4 border-gray-500">
-                                    <h4 className="text-gray-300 font-semibold mb-2">Currently Assigned:</h4>
-                                    {rushee.pis_signup.first_brother_first_name !== "none" && (
-                                        <p className="text-gray-300">
-                                            Brother 1: {rushee.pis_signup.first_brother_first_name} {rushee.pis_signup.first_brother_last_name}
-                                        </p>
-                                    )}
-                                    {rushee.pis_signup.second_brother_first_name !== "none" && (
-                                        <p className="text-gray-300">
-                                            Brother 2: {rushee.pis_signup.second_brother_first_name} {rushee.pis_signup.second_brother_last_name}
-                                        </p>
-                                    )}
-                                    {rushee.pis_signup.third_brother_first_name !== "none" && (
-                                        <p className="text-gray-300">
-                                            Brother 3: {rushee.pis_signup.third_brother_first_name} {rushee.pis_signup.third_brother_last_name}
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-                            
-                            {/* Brother A */}
-                            <div className="mb-4">
-                                <label className="block text-gray-200 font-semibold mb-2">Brother A:</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="text"
-                                        placeholder="First Name"
-                                        value={brotherA.firstName}
-                                        onChange={(e) => setBrotherA({...brotherA, firstName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                        required
+                    <div className="pt-24 p-4 pb-20">
+                        <div className="container mx-auto px-4 max-w-4xl">
+                            {/* Profile Header */}
+                            <div className="card-apple p-6 mb-6">
+                                <div className="flex flex-col md:flex-row items-start gap-6">
+                                    <img
+                                        src={rushee.image_url}
+                                        alt={`${rushee.first_name} ${rushee.last_name}`}
+                                        className="w-60 h-60 rounded-apple-2xl object-cover border border-apple-gray-200 shrink-0"
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Last Name"
-                                        value={brotherA.lastName}
-                                        onChange={(e) => setBrotherA({...brotherA, lastName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            
-                            {/* Brother B */}
-                            <div className="mb-4">
-                                <label className="block text-gray-200 font-semibold mb-2">Brother B:</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="text"
-                                        placeholder="First Name"
-                                        value={brotherB.firstName}
-                                        onChange={(e) => setBrotherB({...brotherB, firstName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Last Name"
-                                        value={brotherB.lastName}
-                                        onChange={(e) => setBrotherB({...brotherB, lastName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                    />
-                                </div>
-                            </div>
-                            
-                            {/* Brother C */}
-                            <div className="mb-4">
-                                <label className="block text-gray-200 font-semibold mb-2">Brother C:</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="text"
-                                        placeholder="First Name"
-                                        value={brotherC.firstName}
-                                        onChange={(e) => setBrotherC({...brotherC, firstName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Last Name"
-                                        value={brotherC.lastName}
-                                        onChange={(e) => setBrotherC({...brotherC, lastName: e.target.value})}
-                                        className="p-3 bg-slate-500 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {questions.length > 0 ? (
-                            questions.map((question, idx) => (
-                                <div key={idx} className="mb-6">
-                                    <p className="text-gray-200 font-semibold mb-2">
-                                        {idx + 1}. {question.question}
-                                    </p>
-
-                                    {question.question_type === "MC" ? (
-                                        <div className="flex items-center space-x-4">
-                                            <label className="flex items-center text-gray-200">
-                                                <input
-                                                    type="radio"
-                                                    name={question.question}
-                                                    value="Yes"
-                                                    checked={answers[question.question] === "Yes"}
-                                                    onChange={(e) => handleAnswerChange(question.question, e.target.value)}
-                                                    className="mr-2"
-                                                />
-                                                Yes
-                                            </label>
-                                            <label className="flex items-center text-gray-200">
-                                                <input
-                                                    type="radio"
-                                                    name={question.question}
-                                                    value="No"
-                                                    checked={answers[question.question] === "No"}
-                                                    onChange={(e) => handleAnswerChange(question.question, e.target.value)}
-                                                    className="mr-2"
-                                                />
-                                                No
-                                            </label>
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-3 items-center">
-                                            <textarea
-                                                className="flex-1 p-3 bg-slate-600 text-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-blue-500 min-h-[100px] resize-y"
-                                                placeholder="Your answer..."
-                                                value={answers[question.question] || ""}
-                                                onChange={(e) => handleAnswerChange(question.question, e.target.value)}
-                                            />
-                                            <div className="flex-shrink-0">
-                                                <VoiceRecorder
-                                                    onTranscription={(transcription) => {
-                                                        // Append to existing text if there's already content
-                                                        const existingAnswer = answers[question.question] || "";
-                                                        const newAnswer = existingAnswer 
-                                                            ? `${existingAnswer} ${transcription}` 
-                                                            : transcription;
-                                                        handleAnswerChange(question.question, newAnswer);
-                                                    }}
-                                                />
+                                    <div className="flex-1">
+                                        <div className="flex flex-col sm:flex-row gap-3 items-start mb-4">
+                                            <h1 className="text-apple-large font-light text-black">
+                                                {rushee.first_name} {rushee.last_name}
+                                            </h1>
+                                            <div className="flex flex-wrap gap-2">
+                                                {rushee.attendance.map((event, idx) => (
+                                                    <Badges text={event.name} key={idx} />
+                                                ))}
                                             </div>
+                                        </div>
+                                        <div className="space-y-2 text-apple-body">
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">Pronouns:</span> {rushee.pronouns}
+                                            </p>
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">Major:</span> {rushee.major}
+                                            </p>
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">Email:</span> {rushee.email}
+                                            </p>
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">Phone:</span> {rushee.phone_number}
+                                            </p>
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">Housing:</span> {rushee.housing}
+                                            </p>
+                                            <p className="text-apple-gray-600 font-light">
+                                                <span className="text-black font-normal">GTID:</span> {rushee.gtid}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* PIS Questions */}
+                            <div className="card-apple p-6 mb-6">
+                                <h1 className="text-apple-title1 font-light text-black mb-6">PIS Questions</h1>
+                                
+                                {/* Disclaimer Message */}
+                                <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-apple">
+                                    <p className="text-apple-footnote text-orange-800 font-light">
+                                        <span className="font-normal">Note:</span> Only the brother who does the main interview should submit this form. 
+                                        The comments from the other two brothers should be taken from a shared Google Doc. If multiple people submit
+                                        the form, the comments there before will be deleted. 
+                                    </p>
+                                </div>
+                                
+                                {/* Brother Information */}
+                                <div className="mb-8 p-6 bg-apple-gray-50 border border-apple-gray-200 rounded-apple">
+                                    <h3 className="text-apple-title2 font-normal text-black mb-4">Brother Information</h3>
+                                    
+                                    {/* Show current assignments if they exist */}
+                                    {rushee.pis_signup && (rushee.pis_signup.first_brother_first_name !== "none" || rushee.pis_signup.second_brother_first_name !== "none" || rushee.pis_signup.third_brother_first_name !== "none") && (
+                                        <div className="mb-6 p-4 bg-apple-gray-100 border border-apple-gray-200 rounded-apple">
+                                            <h4 className="text-apple-body text-black font-normal mb-2">Currently Assigned:</h4>
+                                            {rushee.pis_signup.first_brother_first_name !== "none" && (
+                                                <p className="text-apple-body text-apple-gray-600 font-light">
+                                                    Brother 1: {rushee.pis_signup.first_brother_first_name} {rushee.pis_signup.first_brother_last_name}
+                                                </p>
+                                            )}
+                                            {rushee.pis_signup.second_brother_first_name !== "none" && (
+                                                <p className="text-apple-body text-apple-gray-600 font-light">
+                                                    Brother 2: {rushee.pis_signup.second_brother_first_name} {rushee.pis_signup.second_brother_last_name}
+                                                </p>
+                                            )}
+                                            {rushee.pis_signup.third_brother_first_name !== "none" && (
+                                                <p className="text-apple-body text-apple-gray-600 font-light">
+                                                    Brother 3: {rushee.pis_signup.third_brother_first_name} {rushee.pis_signup.third_brother_last_name}
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                     
-                                    {/* Show warnings for this answer */}
-                                    {answerWarnings[question.question] && answerWarnings[question.question].length > 0 && (
-                                        <div className="mt-2">
-                                            <CommentWarning 
-                                                warnings={answerWarnings[question.question]} 
-                                                onDismiss={(index) => {
-                                                    const newWarnings = answerWarnings[question.question].filter((_, i) => i !== index);
-                                                    setAnswerWarnings((prev) => ({
-                                                        ...prev,
-                                                        [question.question]: newWarnings
-                                                    }));
-                                                }}
+                                    {/* Brother A */}
+                                    <div className="mb-6">
+                                        <label className="block text-apple-footnote font-normal text-apple-gray-700 mb-2">Brother A (Required):</label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={brotherA.firstName}
+                                                onChange={(e) => setBrotherA({...brotherA, firstName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={brotherA.lastName}
+                                                onChange={(e) => setBrotherA({...brotherA, lastName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                                required
                                             />
                                         </div>
-                                    )}
+                                    </div>
+                                    
+                                    {/* Brother B */}
+                                    <div className="mb-6">
+                                        <label className="block text-apple-footnote font-normal text-apple-gray-700 mb-2">Brother B (Optional):</label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={brotherB.firstName}
+                                                onChange={(e) => setBrotherB({...brotherB, firstName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={brotherB.lastName}
+                                                onChange={(e) => setBrotherB({...brotherB, lastName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Brother C */}
+                                    <div className="mb-0">
+                                        <label className="block text-apple-footnote font-normal text-apple-gray-700 mb-2">Brother C (Optional):</label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={brotherC.firstName}
+                                                onChange={(e) => setBrotherC({...brotherC, firstName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={brotherC.lastName}
+                                                onChange={(e) => setBrotherC({...brotherC, lastName: e.target.value})}
+                                                className="input-apple text-apple-footnote"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            ))
-                        ) : (
-                            <p className="text-gray-300">No questions available.</p>
-                        )}
+                                
+                                {questions.length > 0 ? (
+                                    questions.map((question, idx) => (
+                                        <div key={idx} className="mb-8">
+                                            <p className="text-apple-body text-black font-normal mb-4">
+                                                {idx + 1}. {question.question}
+                                            </p>
 
-                        <button
-                            onClick={handleSubmit}
-                            disabled={!brotherA.firstName.trim() || !brotherA.lastName.trim()}
-                            className={`w-full py-3 rounded-lg transition duration-200 ${
-                                brotherA.firstName.trim() && brotherA.lastName.trim()
-                                    ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
-                                    : 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                            }`}
-                        >
-                            Submit Answers
-                        </button>
+                                            {question.question_type === "MC" ? (
+                                                <div className="flex items-center space-x-6">
+                                                    <label className="flex items-center text-apple-body text-black font-light">
+                                                        <input
+                                                            type="radio"
+                                                            name={question.question}
+                                                            value="Yes"
+                                                            checked={answers[question.question] === "Yes"}
+                                                            onChange={(e) => handleAnswerChange(question.question, e.target.value)}
+                                                            className="mr-3 w-4 h-4 text-black focus:ring-black focus:ring-2"
+                                                        />
+                                                        Yes
+                                                    </label>
+                                                    <label className="flex items-center text-apple-body text-black font-light">
+                                                        <input
+                                                            type="radio"
+                                                            name={question.question}
+                                                            value="No"
+                                                            checked={answers[question.question] === "No"}
+                                                            onChange={(e) => handleAnswerChange(question.question, e.target.value)}
+                                                            className="mr-3 w-4 h-4 text-black focus:ring-black focus:ring-2"
+                                                        />
+                                                        No
+                                                    </label>
+                                                </div>
+                                            ) : (
+                                                <div className="flex gap-3 items-center">
+                                                    <textarea
+                                                        className="input-apple flex-1 min-h-[120px] resize-y text-apple-footnote"
+                                                        placeholder="Your answer..."
+                                                        value={answers[question.question] || ""}
+                                                        onChange={(e) => handleAnswerChange(question.question, e.target.value)}
+                                                    />
+                                                    <div className="flex-shrink-0">
+                                                        <VoiceRecorder
+                                                            onTranscription={(transcription) => {
+                                                                // Append to existing text if there's already content
+                                                                const existingAnswer = answers[question.question] || "";
+                                                                const newAnswer = existingAnswer 
+                                                                    ? `${existingAnswer} ${transcription}` 
+                                                                    : transcription;
+                                                                handleAnswerChange(question.question, newAnswer);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                            
+                                            {/* Show warnings for this answer */}
+                                            {answerWarnings[question.question] && answerWarnings[question.question].length > 0 && (
+                                                <div className="mt-4">
+                                                    <CommentWarning 
+                                                        warnings={answerWarnings[question.question]} 
+                                                        onDismiss={(index) => {
+                                                            const newWarnings = answerWarnings[question.question].filter((_, i) => i !== index);
+                                                            setAnswerWarnings((prev) => ({
+                                                                ...prev,
+                                                                [question.question]: newWarnings
+                                                            }));
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-apple-body text-apple-gray-600 font-light text-center py-8">No questions available.</p>
+                                )}
+
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={!brotherA.firstName.trim() || !brotherA.lastName.trim()}
+                                    className={`w-full py-4 px-6 text-apple-headline font-light rounded-apple-xl transition-all duration-200 ${
+                                        brotherA.firstName.trim() && brotherA.lastName.trim()
+                                            ? 'bg-black text-white hover:bg-apple-gray-800 cursor-pointer'
+                                            : 'bg-apple-gray-200 text-apple-gray-400 cursor-not-allowed'
+                                    }`}
+                                >
+                                    Submit Answers
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                    <div className="h-20" />
                 </div>
             )}
         </div>

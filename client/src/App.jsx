@@ -59,21 +59,23 @@ function App() {
 
         </Routes>
 
-        <div className="fixed z-20 bottom-0 w-full bg-blue-900 text-white text-center py-2 text-sm">
-          Contact us at:{" "}   
-          <a
-            href="mailto:vmiriyapalli@gatech.edu"
-            className="text-blue-300 no-underline hover:underline"
-          >
-            vmiriyapalli@gatech.edu
-          </a>
-          {" "}or{" "} 
-          <a
-            href="mailto:kajmera6@gatech.edu"
-            className="text-blue-300 no-underline hover:underline"
-          >
-            kajmera6@gatech.edu
-          </a>
+        <div className="fixed z-20 bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-apple-gray-200 text-center py-3">
+          <p className="text-apple-footnote text-apple-gray-600 font-light">
+            Contact us at{" "}   
+            <a
+              href="mailto:vmiriyapalli@gatech.edu"
+              className="text-black font-normal hover:text-apple-gray-600 transition-colors duration-200 no-underline hover:underline"
+            >
+              vmiriyapalli@gatech.edu
+            </a>
+            {" "}or{" "} 
+            <a
+              href="mailto:kajmera6@gatech.edu"
+              className="text-black font-normal hover:text-apple-gray-600 transition-colors duration-200 no-underline hover:underline"
+            >
+              kajmera6@gatech.edu
+            </a>
+          </p>
         </div>
       </BrowserRouter>
 

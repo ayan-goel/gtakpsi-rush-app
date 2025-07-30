@@ -274,8 +274,8 @@ export default function Register() {
     if (page === 3 && !currLoading) {
         return (
             <SuccessPage
-                title={"Congrats! You've successfully registered for AKPsi Spring 2025 Rush."}
-                description={"If you need to reschedule your PIS, change your information, or update your picture, please use the link below."}
+                title={"Congrats! You've successfully registered for AKPsi Fall 2025 Rush."}
+                description={"If you need to reschedule your PIS, change your information, or update your picture, please use the link below. You can close this page when you are done."}
                 gtid={gtidVal}
                 link={accessCode}
             />
@@ -283,11 +283,11 @@ export default function Register() {
     }
 
     return (
-        <div className="w-screen h-screen bg-slate-800 flex flex-col overflow-y-auto">
+        <div className="w-screen h-screen bg-white flex flex-col overflow-y-auto">
             <Navbar stripped={true} />
 
             {/* Spacing between Navbar and the form */}
-            <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-center animate-fade-in">
                 {page == 0 ? <BasicInfo
                     firstname={firstname}
                     lastname={lastname}

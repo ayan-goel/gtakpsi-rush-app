@@ -38,67 +38,86 @@ const Comments = () => {
   }, []);
 
   return (
-    <div className="m-0 p-0 min-h-screen w-screen bg-slate-900 overflow-y-auto">
+    <div className="min-h-screen w-full bg-white overflow-y-auto">
       <Navbar />
-      <div className="max-w-4xl mx-auto bg-slate-700 shadow-lg rounded-lg p-6 mt-24">
-        <h1 className="text-2xl font-bold mb-6 text-white">Your Comments</h1>
-        {loading ? (
-          <p className="text-gray-300">Loading...</p>
-        ) : error ? (
-          <p className="text-red-400">{error}</p>
-        ) : commentsData.length === 0 ? (
-          <p className="text-gray-300">You haven't commented on any rushees yet.</p>
-        ) : (
-          <div className="space-y-6">
-            {commentsData.map((entry, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col md:flex-row items-center bg-slate-600 rounded-lg p-4 shadow-md border border-gray-500"
-              >
-                <img
-                  src={entry.rushee.image_url}
-                  alt={`${entry.rushee.first_name} ${entry.rushee.last_name}`}
-                  className="w-24 h-24 rounded-lg object-cover border-2 border-slate-500 mb-4 md:mb-0 md:mr-6"
-                />
-                <div className="flex-1 w-full">
-                  <div className="flex flex-row gap-2 items-center mb-1">
-                    <h2 className="text-xl font-bold text-white">
-                      {entry.rushee.first_name} {entry.rushee.last_name}
-                    </h2>
-                  </div>
-                  {entry.comments.map((comment, cidx) => (
-                    <div key={cidx} className="mb-4">
-                      <div className="flex flex-row gap-2 items-center mb-2">
-                        <p className="text-gray-200 mb-0">{comment.comment}</p>
-                        {comment.night?.name && (
-                          <span className="bg-gradient-to-r from-sky-700 to-amber-600 text-white text-xs font-semibold px-2 py-1 rounded ml-2">
-                            {comment.night.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {comment.ratings && comment.ratings.map((rating, rIdx) => (
-                          <span
-                            key={rIdx}
-                            className="bg-slate-500 text-gray-200 px-2 py-1 rounded text-sm"
-                          >
-                            {rating.name}: {rating.value === 5 ? 'Satisfactory' : 'Unsatisfactory'}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => navigate(`/brother/rushee/${entry.rushee.gtid}`)}
-                    className="mt-2 bg-gradient-to-r from-sky-700 to-amber-600 hover:from-pink-500 hover:to-green-500 text-white font-bold py-2 px-4 rounded focus:ring transform transition hover:scale-105 duration-300 ease-in-out"
-                  >
-                    View full profile
-                  </button>
-                </div>
-              </div>
-            ))}
+      <div className="pt-24 p-4 pb-20">
+        <div className="container mx-auto px-4 max-w-4xl">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-apple-large font-light text-black mb-3">Your Comments</h1>
+            <div className="w-16 h-0.5 bg-black mx-auto mb-4"></div>
+            <p className="text-apple-subheadline text-apple-gray-600 font-light">
+              View all the comments and ratings you've submitted for rushees
+            </p>
           </div>
-        )}
+          {loading ? (
+            <div className="card-apple p-8 text-center">
+              <p className="text-apple-footnote text-apple-gray-600 font-light">Loading...</p>
+            </div>
+          ) : error ? (
+            <div className="card-apple p-8 text-center">
+              <p className="text-red-600">{error}</p>
+            </div>
+          ) : commentsData.length === 0 ? (
+            <div className="card-apple p-8 text-center">
+              <p className="text-apple-footnote text-apple-gray-600 font-light">You haven't commented on any rushees yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {commentsData.map((entry, idx) => (
+                <div
+                  key={idx}
+                  className="card-apple p-6 hover:border-apple-gray-300 transition-all duration-200"
+                >
+                  <div className="flex flex-col md:flex-row items-start gap-6">
+                    <img
+                      src={entry.rushee.image_url}
+                      alt={`${entry.rushee.first_name} ${entry.rushee.last_name}`}
+                      className="w-24 h-24 rounded-apple-2xl object-cover border border-apple-gray-200 shrink-0"
+                    />
+                    <div className="flex-1 w-full">
+                      <div className="flex flex-row gap-2 items-center mb-4">
+                        <h2 className="text-apple-title1 font-normal text-black">
+                          {entry.rushee.first_name} {entry.rushee.last_name}
+                        </h2>
+                      </div>
+                      {entry.comments.map((comment, cidx) => (
+                        <div key={cidx} className="mb-6 last:mb-4">
+                          <div className="flex flex-col gap-3 mb-3">
+                            <div className="flex items-start gap-3">
+                              <p className="text-apple-body text-black font-light flex-1">{comment.comment}</p>
+                              {comment.night?.name && (
+                                <span className="bg-apple-gray-100 text-apple-gray-700 text-apple-caption1 font-light px-2 py-1 rounded-apple whitespace-nowrap">
+                                  {comment.night.name}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {comment.ratings && comment.ratings.map((rating, rIdx) => (
+                                <span
+                                  key={rIdx}
+                                  className="bg-apple-gray-100 text-apple-gray-700 px-2 py-1 rounded-apple text-apple-caption1 font-light"
+                                >
+                                  {rating.name}: {rating.value === 5 ? 'Satisfactory' : 'Unsatisfactory'}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => navigate(`/brother/rushee/${entry.rushee.gtid}`)}
+                        className="btn-apple px-6 py-3 text-apple-body font-light"
+                      >
+                        View full profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

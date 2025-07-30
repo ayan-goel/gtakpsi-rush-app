@@ -59,100 +59,127 @@ export default function PisSignUp(props) {
     };
 
     return (
-        <div className="w-screen min-h-screen bg-slate-900 text-white flex flex-col justify-center items-center">
+        <div className="w-screen min-h-screen bg-white flex flex-col justify-center items-center pt-16">
             {error ? (
-                <div className="text-red-500 text-center mt-4">
-                    Error loading timeslots. Please try again later.
+                <div className="card-apple p-6 text-center animate-slide-up">
+                    <div className="flex items-center justify-center w-16 h-16 bg-apple-gray-100 rounded-apple-2xl border border-apple-gray-200 mb-4 mx-auto">
+                        <svg className="w-8 h-8 text-apple-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <h3 className="text-apple-title2 font-light text-black mb-2">Unable to Load Timeslots</h3>
+                    <p className="text-apple-body text-apple-gray-600 font-light">Please try again later or contact support.</p>
                 </div>
             ) : (
                 <div>
                     {loading ? (
                         <Loader />
                     ) : (
-                        <div className="text-center w-full p-8">
-                            <h1 className="mb-2 font-bold bg-gradient-to-r from-sky-700 via-amber-600 to-sky-700 animate-text bg-clip-text text-transparent text-4xl">
-                                Choose your PIS Timeslot
-                            </h1>
-                            <h1 className="text-slate-500 mb-4">
-                                The PIS is an interview to get to know a little more about you
-                                outside of a rush setting.
-                            </h1>
+                        <div className="text-center w-full p-8 max-w-7xl mx-auto mb-16">
+                            {/* Header Section */}
+                            <div className="mb-8 animate-slide-up">
+                                <h1 className="mb-3 text-apple-large font-light text-black">
+                                    Choose Your PIS Timeslot
+                                </h1>
+                                <div className="w-16 h-0.5 bg-black mx-auto mb-4"></div>
+                                <p className="text-apple-subheadline text-apple-gray-600 font-light max-w-2xl mx-auto">
+                                    The PIS is an interview to get to know a little more about you outside of a rush setting
+                                </p>
+                            </div>
                             
                             {/* Warning message for Wednesday slots */}
-                            <div className="mb-6 p-4 bg-yellow-900 border border-yellow-600 rounded-lg max-w-4xl mx-auto">
-                                <div className="flex items-center gap-2 text-yellow-200">
-                                    <span className="text-yellow-400 text-xl">⚠️</span>
-                                    <p className="text-sm">
-                                        <strong>Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to. </strong> 
-                                        If you must, please email <a href="mailto:vmiriyapalli@gatech.edu" className="text-yellow-300 underline">vmiriyapalli@gatech.edu</a> with a reason as to why and she will schedule you between 8:00 PM and 10:15 PM.
-                                    </p>
+                            <div className="mb-8 animate-slide-up flex justify-center" style={{animationDelay: '0.2s'}}>
+                                <div className="bg-orange-50 border border-orange-200 rounded-apple-2xl p-6 max-w-2xl">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-orange-500 text-lg mt-0.5">⚠️</span>
+                                        <div className="text-left">
+                                            <p className="text-apple-body text-orange-800 font-normal leading-relaxed">
+                                                <strong className="font-medium text-orange-900">Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to.</strong> 
+                                                If you must, please email <a href="mailto:vmiriyapalli@gatech.edu" className="text-orange-700 underline hover:text-orange-600 transition-colors duration-200">vmiriyapalli@gatech.edu</a> with a reason as to why and she will schedule you between 8:00 PM and 10:15 PM.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div className="flex justify-center">
-                                <div className="flex gap-8 justify-center items-start max-w-7xl">
-                                {[...days.entries()]
-                                    .filter(([day]) => {
-                                        // Exclude Monday
-                                        const jsDate = new Date(day);
-                                        return jsDate.getDay() !== 1; // Monday is day 1
-                                    })
-                                    .map(([day, timeslots]) => (
-                                        <div
-                                            key={day}
-                                            className="bg-gray-800 shadow-lg rounded-lg p-4 flex-shrink-0 min-w-0"
-                                        >
-                                            <h2 className="text-xl font-semibold text-center mb-4">
-                                                {day}
-                                            </h2>
-                                            <div className="grid grid-cols-6 gap-2 max-w-2xl justify-items-center">
-                                                {timeslots.map((slot, index) => (
-                                                    <button
-                                                        key={index}
-                                                        onClick={() => handleSlotClick(slot)}
-                                                        className={`py-2 px-4 rounded-lg transition transform ${
-                                                            slot === props.selectedSlot
-                                                                ? "outline outline-2 outline-white"
-                                                                : ""
-                                                        } ${
-                                                            slot.num_available === 0
-                                                                ? "bg-gray-500 cursor-not-allowed"
-                                                                : "bg-gradient-to-r from-sky-700 via-teal-600 to-amber-600 hover:scale-105 hover:shadow-lg"
-                                                        }`}
-                                                        disabled={slot.num_available === 0}
-                                                    >
-                                                        {slot.time.toLocaleTimeString([], {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
-                                                        <span className="block text-sm">
-                                                            {slot.num_available > 0
-                                                                ? `${slot.num_available} slots available`
-                                                                : "Full"}
-                                                        </span>
-                                                    </button>
-                                                ))}
+                            {/* Timeslot Selection */}
+                            <div className="animate-slide-up" style={{animationDelay: '0.4s'}}>
+                                <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
+                                    {[...days.entries()]
+                                        .filter(([day]) => {
+                                            // Exclude Monday
+                                            const jsDate = new Date(day);
+                                            return jsDate.getDay() !== 1; // Monday is day 1
+                                        })
+                                        .map(([day, timeslots]) => (
+                                            <div
+                                                key={day}
+                                                className="card-apple p-6 flex-shrink-0 min-w-0"
+                                            >
+                                                <h2 className="text-apple-title2 font-light text-black text-center mb-6">
+                                                    {day}
+                                                </h2>
+                                                <div className="grid grid-cols-3 lg:grid-cols-6 gap-3 max-w-2xl">
+                                                    {timeslots.map((slot, index) => (
+                                                        <button
+                                                            key={index}
+                                                            onClick={() => handleSlotClick(slot)}
+                                                            className={`py-3 px-4 rounded-apple-xl transition-all duration-200 text-center ${
+                                                                slot === props.selectedSlot
+                                                                    ? "ring-2 ring-black ring-offset-2 bg-black text-white"
+                                                                    : ""
+                                                            } ${
+                                                                slot.num_available === 0
+                                                                    ? "bg-apple-gray-100 text-apple-gray-400 cursor-not-allowed border border-apple-gray-200"
+                                                                    : slot === props.selectedSlot
+                                                                    ? "bg-black text-white"
+                                                                    : "bg-white border border-apple-gray-300 text-black hover:bg-apple-gray-50 hover:border-apple-gray-400 active:scale-95"
+                                                            }`}
+                                                            disabled={slot.num_available === 0}
+                                                        >
+                                                            <div className="text-apple-footnote font-medium">
+                                                                {slot.time.toLocaleTimeString([], {
+                                                                    hour: "2-digit",
+                                                                    minute: "2-digit",
+                                                                })}
+                                                            </div>
+                                                            <div className="text-apple-caption1 mt-1 opacity-75">
+                                                                {slot.num_available > 0
+                                                                    ? `${slot.num_available} left`
+                                                                    : "Full"}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                </div>
                             </div>
-                            </div>
+                            {/* Selected Slot Confirmation */}
                             {props.selectedSlot && (
-                                <div className="mt-6 text-center text-green-500">
-                                    You selected: {props.selectedSlot.time.toLocaleString()}
+                                <div className="mt-8 animate-slide-up flex justify-center">
+                                    <div className="card-apple p-4 inline-block">
+                                        <p className="text-apple-body text-black font-light">
+                                            <span className="font-medium">Selected:</span> {props.selectedSlot.time.toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
                             )}
-                            <button
-                                onClick={props.func}
-                                disabled={!props.selectedSlot}
-                                className={`mt-6 py-3 px-6 text-lg font-bold rounded-lg transition ${
-                                    props.selectedSlot
-                                        ? "bg-gradient-to-r from-amber-600 to-sky-700 hover:scale-105 hover:shadow-lg text-white"
-                                        : "bg-gray-500 cursor-not-allowed text-gray-300"
-                                }`}
-                            >
-                                Submit
-                            </button>
+                            
+                            {/* Submit Button */}
+                            <div className="mt-8 animate-slide-up" style={{animationDelay: '0.6s'}}>
+                                <button
+                                    onClick={props.func}
+                                    disabled={!props.selectedSlot}
+                                    className={`px-8 py-4 text-apple-headline font-light rounded-apple-2xl transition-all duration-200 ${
+                                        props.selectedSlot
+                                            ? "btn-apple"
+                                            : "bg-apple-gray-200 text-apple-gray-400 cursor-not-allowed"
+                                    }`}
+                                >
+                                    Continue to Complete Registration
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

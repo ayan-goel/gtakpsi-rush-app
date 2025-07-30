@@ -1,99 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-
-const LiquidShader = () => {
-
-    const meshRef = useRef();
-    const clock = new THREE.Clock();
-
-    useFrame(() => {
-        const time = clock.getElapsedTime();
-        if (meshRef.current) {
-            meshRef.current.material.uniforms.uTime.value = time;
-        }
-    });
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (meshRef.current) {
-                const aspect = window.innerWidth / window.innerHeight;
-                const scaleX = aspect > 1 ? aspect : 1;
-                const scaleY = aspect > 1 ? 1 : 1 / aspect;
-
-                // Scale the plane to ensure no whitespace
-                meshRef.current.scale.set(scaleX * 3, scaleY * 3, 1);
-
-                // Update resolution uniform
-                meshRef.current.material.uniforms.uResolution.value.set(
-                    window.innerWidth,
-                    window.innerHeight
-                );
-            }
-        };
-
-        handleResize(); // Initial resize
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    return (
-        <mesh ref={meshRef}>
-            {/* Plane large enough to cover all screen sizes */}
-            <planeGeometry args={[1, 1, 64, 64]} />
-            <shaderMaterial
-                uniforms={{
-                    uTime: { value: 0 },
-                    uResolution: {
-                        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-                    },
-                    uColors: {
-                        value: [
-                            new THREE.Color("#0033A0"), // Blue (AKPsi)
-                            new THREE.Color("#FFD700"), // Gold (AKPsi)
-                            new THREE.Color("#FFD700"), // Reinforce Gold
-                            new THREE.Color("#0033A0"), // Reinforce Blue
-                        ],
-                    },
-                }}
-                vertexShader={`
-                    uniform float uTime;
-                    varying vec2 vUv;
-
-                    void main() {
-                        vUv = uv;
-                        vec3 transformed = position;
-
-                        // Add randomness to the waves
-                        transformed.z += sin(uv.x * 2.0 + uTime * 1.5) * 0.2;
-                        transformed.z += cos(uv.y * 2.0 + uTime * 1.0) * 0.2;
-                        transformed.z += sin(uv.x * 2.0 + uTime * 0.5) * 0.1;
-
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
-                    }
-                `}
-                fragmentShader={`
-                    uniform vec3 uColors[4]; // Array of colors (blue and gold focus)
-                    uniform float uTime;
-                    varying vec2 vUv;
-
-                    void main() {
-                        // Blend between blue and gold with emphasis on gold
-                        vec3 color = mix(uColors[0], uColors[1], sin(vUv.y * 5.0 + uTime * 0.3) * 0.5 + 0.5);
-                        color = mix(color, uColors[2], cos(vUv.x * 5.0 + uTime * 0.5) * 0.7 + 0.3); // More gold
-                        color = mix(color, uColors[3], sin(vUv.y * 10.0 + uTime * 0.7) * 0.2 + 0.8); // Reinforce blue
-
-                        gl_FragColor = vec4(color, 1.0);
-                    }
-                `}
-                side={THREE.DoubleSide}
-                transparent={true}
-            />
-        </mesh>
-    );
-};
 
 export default function MyError(props) {
 
@@ -112,51 +18,55 @@ export default function MyError(props) {
     }
 
     return (
-
-        <div className="relative w-full h-screen overflow-hidden bg-gradient-to-r from-blue-800 via-yellow-00 to-blue-800">
-            {/* Fullscreen Canvas */}
-            <Canvas
-                camera={{
-                    position: [0, 0, 1], // Adjusted camera for fullscreen plane
-                }}
-                className="absolute top-0 left-0 w-full h-full"
-            >
-                <LiquidShader />
-            </Canvas>
-
-            {/* Content Overlay */}
-            <div className="absolute text-center inset-0 flex flex-col items-center justify-center z-10">
-                <div className="flex items-center justify-center w-28 h-28 bg-red-500 rounded-full border-4 border-white">
+        <div className="relative w-full h-screen bg-white flex flex-col items-center justify-center">
+            <div className="text-center animate-fade-in">
+                {/* Error Icon */}
+                <div className="flex items-center justify-center w-24 h-24 bg-apple-gray-100 rounded-apple-2xl border border-apple-gray-200 mb-8 animate-slide-up">
                     <svg
-                        className="w-16 h-16 text-white"
+                        className="w-12 h-12 text-apple-gray-600"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
+                        {props.wrongpage ? (
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                            />
+                        ) : (
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        )}
                     </svg>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl font-bold text-white mt-6 text-center">{title}</h1>
+                <div className="mb-6 animate-slide-up" style={{animationDelay: '0.1s'}}>
+                    <h1 className="text-apple-large font-light text-black mb-2">{titleShown}</h1>
+                    <div className="w-16 h-0.5 bg-black mx-auto"></div>
+                </div>
 
                 {/* Description */}
-                <p className="text-lg text-white mt-3 text-center max-w-xl">{description}</p>
+                <p className="text-apple-title2 text-apple-gray-600 font-light mb-8 max-w-md mx-auto leading-relaxed animate-slide-up" style={{animationDelay: '0.2s'}}>
+                    {descriptionShown}
+                </p>
 
-                <button onClick={() => {
-                    navigate("/")
-                }} className="mt-3 px-6 py-3 bg-orange-300 text-white font-semibold rounded-lg shadow-md hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                    Go Back
-                </button>
-
+                {/* Button */}
+                <div className="animate-slide-up" style={{animationDelay: '0.3s'}}>
+                    <button 
+                        onClick={() => navigate("/")} 
+                        className="btn-apple px-8 py-4 text-apple-headline"
+                    >
+                        Go Home
+                    </button>
+                </div>
             </div>
         </div>
-
     );
 }
