@@ -61,7 +61,7 @@ export default function PisSignUp(props) {
     return (
         <div className="w-screen min-h-screen bg-white flex flex-col justify-center items-center pt-16">
             {error ? (
-                <div className="card-apple p-6 text-center animate-slide-up">
+                <div className="card-apple p-6 text-center">
                     <div className="flex items-center justify-center w-16 h-16 bg-apple-gray-100 rounded-apple-2xl border border-apple-gray-200 mb-4 mx-auto">
                         <svg className="w-8 h-8 text-apple-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -77,7 +77,7 @@ export default function PisSignUp(props) {
                     ) : (
                         <div className="text-center w-full p-8 max-w-7xl mx-auto mb-16">
                             {/* Header Section */}
-                            <div className="mb-8 animate-slide-up">
+                            <div className="mb-8">
                                 <h1 className="mb-3 text-apple-large font-light text-black">
                                     Choose Your PIS Timeslot
                                 </h1>
@@ -88,7 +88,7 @@ export default function PisSignUp(props) {
                             </div>
                             
                             {/* Warning message for Wednesday slots */}
-                            <div className="mb-8 animate-slide-up flex justify-center" style={{animationDelay: '0.2s'}}>
+                            <div className="mb-8 flex justify-center">
                                 <div className="bg-orange-50 border border-orange-200 rounded-apple-2xl p-6 max-w-2xl">
                                     <div className="flex items-start gap-3">
                                         <span className="text-orange-500 text-lg mt-0.5">⚠️</span>
@@ -103,7 +103,7 @@ export default function PisSignUp(props) {
                             </div>
                             
                             {/* Timeslot Selection */}
-                            <div className="animate-slide-up" style={{animationDelay: '0.4s'}}>
+                            <div>
                                 <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
                                     {[...days.entries()]
                                         .filter(([day]) => {
@@ -157,7 +157,7 @@ export default function PisSignUp(props) {
                             </div>
                             {/* Selected Slot Confirmation */}
                             {props.selectedSlot && (
-                                <div className="mt-8 animate-slide-up flex justify-center">
+                                <div className="mt-8 flex justify-center">
                                     <div className="card-apple p-4 inline-block">
                                         <p className="text-apple-body text-black font-light">
                                             <span className="font-medium">Selected:</span> {props.selectedSlot.time.toLocaleString()}
@@ -167,7 +167,7 @@ export default function PisSignUp(props) {
                             )}
                             
                             {/* Submit Button */}
-                            <div className="mt-8 animate-slide-up" style={{animationDelay: '0.6s'}}>
+                            <div className="mt-8">
                                 <button
                                     onClick={props.func}
                                     disabled={!props.selectedSlot}
