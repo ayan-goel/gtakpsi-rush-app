@@ -182,7 +182,7 @@ export default function Register() {
 
             // Prepare the upload parameters
             uploadParams = {
-                Bucket: "rush-app-photos", // S3 bucket name
+                Bucket: "rush-app-pics", // S3 bucket name
                 Key: s3Key, // File name
                 Body: base64ToBlob(image), // File content
                 ContentType: image.type, // File MIME type (e.g., image/jpeg)
@@ -228,7 +228,7 @@ export default function Register() {
             major: majorVal,
             class: yearVal,
             pronouns: pronounsVal,
-            image_url: `https://rush-app-photos.s3.us-east-2.amazonaws.com/${s3Key}`,
+            image_url: `https://rush-app-pics.s3.us-east-2.amazonaws.com/${s3Key}`,
             exposure: exposureVal,
             pis_meeting_id: "meeting123",
             pis_timeslot: selectedSlot.time, // ISO 8601 format

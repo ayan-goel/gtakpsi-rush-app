@@ -89,7 +89,7 @@ export default function RusheePage() {
 
         // Prepare the upload parameters
         const uploadParams = {
-            Bucket: "rush-app-photos", // S3 bucket name
+            Bucket: "rush-app-pics", // S3 bucket name
             Key: s3Key, // File name
             Body: base64ToBlob(image), // File content
             ContentType: image.type, // File MIME type (e.g., image/jpeg)
@@ -103,7 +103,7 @@ export default function RusheePage() {
             const payload = [
                 {
                     "field": "image_url",
-                    "new_value": `https://rush-app-photos.s3.us-east-2.amazonaws.com/${s3Key}`,
+                    "new_value": `https://rush-app-pics.s3.us-east-2.amazonaws.com/${s3Key}`,
                 }
             ]
 
