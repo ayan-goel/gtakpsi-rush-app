@@ -175,14 +175,7 @@ export default function BidCommitteeDashboard(props) {
 
                             <div className="pt-24 p-4 pb-20">
                                 <div className="container mx-auto px-4 max-w-7xl">
-                                    {/* Header */}
-                                    <div className="text-center mb-8">
-                                        <h1 className="text-5xl font-light text-black mb-3">Bid Committee Mode</h1>
-                                        <div className="w-16 h-0.5 bg-black mx-auto mb-4"></div>
-                                        <p className="text-apple-subheadline text-apple-gray-600 font-light">
-                                            Names and faces are replaced with numbers for unbiased evaluation
-                                        </p>
-                                    </div>
+
 
                                     {/* Search and Filters */}
                                     <div className="card-apple p-6 mb-8">
