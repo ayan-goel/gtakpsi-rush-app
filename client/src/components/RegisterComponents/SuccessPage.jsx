@@ -13,7 +13,7 @@ export default function SuccessPage({ title, description, link, gtid }) {
     return (
         <div className="relative w-full h-screen bg-white flex flex-col items-center justify-center px-4">
             {/* Success Icon */}
-            <div className="mb-8 animate-slide-up">
+            <div className="mb-8">
                 <div className="flex items-center justify-center w-20 h-20 bg-black rounded-apple-2xl">
                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -22,7 +22,7 @@ export default function SuccessPage({ title, description, link, gtid }) {
             </div>
 
             {/* Header Section */}
-            <div className="text-center mb-8 animate-slide-up" style={{animationDelay: '0.2s'}}>
+            <div className="text-center mb-8">
                 <h1 className="text-apple-large font-light text-black mb-4 max-w-2xl leading-tight">
                     {title}
                 </h1>
@@ -33,7 +33,7 @@ export default function SuccessPage({ title, description, link, gtid }) {
             </div>
 
             {/* Link Section */}
-            <div className="card-apple p-6 max-w-2xl w-full animate-slide-up" style={{animationDelay: '0.4s'}}>
+            <div className="card-apple p-6 max-w-2xl w-full">
                 <div className="mb-4">
                     <label className="block text-apple-footnote text-apple-gray-700 font-normal mb-2">
                         Your personal link:
