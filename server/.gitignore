@@ -1,0 +1,3 @@
+/target
+build_lambda_role.json
+.env
