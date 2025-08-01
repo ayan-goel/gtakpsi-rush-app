@@ -83,6 +83,7 @@ async fn main() -> Result<(), Error> {
         
         .route("/rushee/vote", post(controllers::voting::handle_rushee_vote).options(|| async { StatusCode::OK }))
         .route("/admin/voting/change-rushee", post(controllers::voting::change_rushee).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/clear-votes", post(controllers::voting::clear_votes).options(|| async { StatusCode::OK }))
         
         .layer(
             CorsLayer::new()
