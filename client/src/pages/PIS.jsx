@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import VoiceRecorder from "../components/VoiceRecorder";
+import CollaborativeTextarea from "../components/CollaborativeTextarea";
+import VoiceTranscriptionHandler from "../components/VoiceTranscriptionHandler";
 import axios from "axios";
 import CommentWarning from "../components/CommentWarning";
 import { validateComment, generateWarnings } from "../js/speculativeWordBank";
+import { useCollaboration } from "../hooks/useCollaboration";
 
 import { verifyUser } from "../js/verifications";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +16,20 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Badges from "../components/Badge";
+
+// Helper to get or create a stable user ID for this browser tab
+const getStableUserId = (backendId) => {
+    // Prefer the backend ID if provided
+    if (backendId) return backendId;
+    // Otherwise try to reuse one stored in sessionStorage
+    const STORAGE_KEY = "collab_stable_user_id";
+    const existing = sessionStorage.getItem(STORAGE_KEY);
+    if (existing) return existing;
+    // Create a new random ID and store it
+    const newId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    sessionStorage.setItem(STORAGE_KEY, newId);
+    return newId;
+};
 
 export default function PIS() {
     const { gtid } = useParams();
@@ -25,8 +42,37 @@ export default function PIS() {
     const [brotherA, setBrotherA] = useState({ firstName: '', lastName: '' });
     const [brotherB, setBrotherB] = useState({ firstName: '', lastName: '' });
     const [brotherC, setBrotherC] = useState({ firstName: '', lastName: '' });
+    const [currentUser, setCurrentUser] = useState(null);
 
     const navigate = useNavigate();
+
+    // Initialize WebSocket collaboration
+    const collaboration = useCollaboration(`pis-${gtid}`, currentUser);
+
+    // Request latest document state once connected
+    useEffect(() => {
+        if (collaboration.isConnected) {
+            collaboration.requestDocumentState();
+        }
+    }, [collaboration.isConnected]);
+
+    // Merge incoming document state into local answers so that late joiners see the latest text
+    useEffect(() => {
+        const docState = collaboration.documentState;
+        if (docState && Object.keys(docState).length > 0) {
+            setAnswers(prev => {
+                let changed = false;
+                const merged = { ...prev };
+                for (const [field, value] of Object.entries(docState)) {
+                    if (merged[field] !== value) {
+                        merged[field] = value;
+                        changed = true;
+                    }
+                }
+                return changed ? merged : prev;
+            });
+        }
+    }, [collaboration.documentState]);
 
     const errorTitle = "Default Error Title";
     const errorDescription = "Default Error Description";
@@ -40,6 +86,17 @@ export default function PIS() {
                         navigate(`/error/${errorTitle}/${errorDescription}`);
                     }
 
+                    // Set current user for collaboration - make it stable across re-renders
+                    if (!currentUser || !currentUser.id) {
+                        const userId = getStableUserId(response.id);
+                        const user = {
+                            id: userId,
+                            firstName: response.firstName || 'Anonymous',
+                            lastName: response.lastName || 'User',
+                        };
+                        setCurrentUser(user);
+                    }
+
                     // Fetch rushee data
                     await axios.get(`${api}/rushee/${gtid}`)
                         .then((response) => {
@@ -51,7 +108,8 @@ export default function PIS() {
                                 response.data.payload.pis?.forEach((pis) => {
                                     existingAnswers[pis.question] = pis.answer;
                                 });
-                                setAnswers(existingAnswers);
+                                // Merge with any answers already present (e.g., from real-time doc state)
+                                setAnswers((prev) => ({ ...prev, ...existingAnswers }));
                             } else {
                                 navigate(`/error/${errorTitle}/${"Rushee with this GTID does not exist"}`);
                             }
@@ -208,6 +266,18 @@ export default function PIS() {
 
                     <div className="pt-24 p-4 pb-20">
                         <div className="container mx-auto px-4 max-w-4xl">
+                            {/* Collaboration Status */}
+                            {collaboration.isConnected && (
+                                 <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-apple">
+                                     <div className="flex items-center space-x-2">
+                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                         <span className="text-sm text-green-800">
+                                             {collaboration.connectedUsers.length} other user{collaboration.connectedUsers.length===1?'':'s'} online
+                                         </span>
+                                     </div>
+                                 </div>
+                             )}
+
                             {/* Profile Header */}
                             <div className="card-apple p-6 mb-6">
                                 <div className="flex flex-col md:flex-row items-start gap-6">
@@ -258,9 +328,13 @@ export default function PIS() {
                                 {/* Disclaimer Message */}
                                 <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-apple">
                                     <p className="text-apple-footnote text-orange-800 font-light">
-                                        <span className="font-normal">Note:</span> Only the brother who does the main interview should submit this form. 
-                                        The comments from the other two brothers should be taken from a shared Google Doc. If multiple people submit
-                                        the form, the comments there before will be deleted. 
+                                        <span className="font-normal">Note:</span> Multiple people can now collaborate on this form in real-time! 
+                                        You'll see others' cursors and typing as they work. Only the main interviewer should submit when everyone is ready.
+                                        {!collaboration.isConnected && (
+                                            <span className="block mt-2 text-orange-600">
+                                                ⚠️ Real-time collaboration is currently offline. 
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
                                 
@@ -389,23 +463,26 @@ export default function PIS() {
                                                     </label>
                                                 </div>
                                             ) : (
-                                                <div className="flex gap-3 items-center">
-                                                    <textarea
-                                                        className="input-apple flex-1 min-h-[120px] resize-y text-apple-footnote"
-                                                        placeholder="Your answer..."
-                                                        value={answers[question.question] || ""}
-                                                        onChange={(e) => handleAnswerChange(question.question, e.target.value)}
-                                                    />
-                                                    <div className="flex-shrink-0">
-                                                        <VoiceRecorder
-                                                            onTranscription={(transcription) => {
-                                                                // Append to existing text if there's already content
-                                                                const existingAnswer = answers[question.question] || "";
-                                                                const newAnswer = existingAnswer 
-                                                                    ? `${existingAnswer} ${transcription}` 
-                                                                    : transcription;
+                                                <div className="flex gap-3 items-start">
+                                                    <div className="flex-1">
+                                                        <CollaborativeTextarea
+                                                            questionKey={question.question}
+                                                            value={answers[question.question] || ""}
+                                                            onChange={handleAnswerChange}
+                                                            placeholder="Your answer..."
+                                                            className="input-apple w-full min-h-[120px] resize-y text-apple-footnote"
+                                                            collaboration={collaboration}
+                                                            currentUser={currentUser}
+                                                        />
+                                                    </div>
+                                                    <div className="flex-shrink-0 self-center">
+                                                        <VoiceTranscriptionHandler
+                                                            questionKey={question.question}
+                                                            currentValue={answers[question.question] || ""}
+                                                            onTranscription={(newAnswer) => {
                                                                 handleAnswerChange(question.question, newAnswer);
                                                             }}
+                                                            disabled={!collaboration.isConnected && collaboration.connectedUsers.length > 0}
                                                         />
                                                     </div>
                                                 </div>
