@@ -31,7 +31,7 @@ async fn main() {
         "/admin/:id",
         get({
             let admins = admins.clone();
-            move |path, ws, addr| admin_ws_handler(path, ws, addr, clients) 
+            move |path, ws, addr| admin_ws_handler(path, ws, addr, admins) 
         })
     );
 
