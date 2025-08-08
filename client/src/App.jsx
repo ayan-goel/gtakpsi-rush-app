@@ -28,6 +28,12 @@ import NotFound from './pages/404';
 import SuccessPage from './components/AttendanceComponents/SuccessPage';
 import Comments from './pages/Comments';
 
+<<<<<<< HEAD
+=======
+import AdminVotingDashboard from './pages/AdminVotingDashboardComponents';
+import BrotherVotingPage from './pages/BrotherVotingPage';
+
+>>>>>>> realtime-voting
 function App() {
 
   return (
@@ -56,6 +62,11 @@ function App() {
           <Route path='*' element={<NotFound/>} />
 
           <Route path='/admin/addpis' element={<AddPIS/>} />
+<<<<<<< HEAD
+=======
+          <Route path='/admin/voting' element={<AdminVotingDashboard/>} />
+          <Route path='/voting' element={<BrotherVotingPage/>} />
+>>>>>>> realtime-voting
 
         </Routes>
 

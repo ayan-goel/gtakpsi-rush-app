@@ -97,4 +97,23 @@
   .select-apple {
     @apply selection:bg-black selection:text-white;
   }
+<<<<<<< HEAD
+=======
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+>>>>>>> realtime-voting
 }

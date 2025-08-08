@@ -18,6 +18,11 @@ use axum::http::Method;
 use dotenv::dotenv;
 use std::env;
 
+<<<<<<< HEAD
+=======
+use controllers::voting::ChangeRusheePayload;
+
+>>>>>>> realtime-voting
 mod controllers;
 mod models;
 mod middlewares;
@@ -76,12 +81,31 @@ async fn main() -> Result<(), Error> {
         .route("/admin/get_pis_timeslots", get(controllers::admin::get_pis_timeslots).options(|| async { StatusCode::OK }))
         .route("/admin/add-rush-night", post(controllers::admin::add_rush_night).options(|| async { StatusCode::OK }))
         .route("/admin/delete_rush_night", post(controllers::admin::delete_rush_night).options(|| async { StatusCode::OK }))
+<<<<<<< HEAD
         .route("/admin/pis-signup/:id", post(controllers::admin::brother_pis_sign_up))
         .route("/admin/get-brother-pis", post(controllers::admin::get_brother_pis))
         
         .layer(
             CorsLayer::new()
                 .allow_origin(Any) // Allow requests from any origin
+=======
+        .route("/admin/pis-signup/:id", post(controllers::admin::brother_pis_sign_up).options(|| async { StatusCode::OK }))
+        .route("/admin/get-brother-pis", post(controllers::admin::get_brother_pis).options(|| async { StatusCode::OK }))
+        
+        .route("/rushee/vote", post(controllers::voting::handle_rushee_vote).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/change-rushee", post(controllers::voting::change_rushee).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/clear-votes", post(controllers::voting::clear_votes).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/make-eligible", post(controllers::voting::make_eligible).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/make-ineligible", post(controllers::voting::make_ineligible).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/get-eligibility", get(controllers::voting::get_elibibility).options(|| async { StatusCode::OK }))
+        .route("/admin/voting/post-question", post(controllers::voting::post_question).options(|| async { StatusCode::OK }))
+
+        .route("/admin/voting/get-rushee", get(controllers::voting::get_rushee).options(|| async { StatusCode::OK }))
+        
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any) // Allow requests from any origin``
+>>>>>>> realtime-voting
                 .allow_methods([Method::GET, Method::POST, Method::OPTIONS]) // Allow specific HTTP methods
                 .allow_headers(Any) // Allow any headers, including custom ones like `Authorization`
                 .expose_headers(Any), // Expose specific headers in the browser (optional)

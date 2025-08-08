@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import VoiceRecorder from "../components/VoiceRecorder";
+<<<<<<< HEAD
 import CollaborativeTextarea from "../components/CollaborativeTextarea";
 import VoiceTranscriptionHandler from "../components/VoiceTranscriptionHandler";
 import axios from "axios";
 import CommentWarning from "../components/CommentWarning";
 import { validateComment, generateWarnings } from "../js/speculativeWordBank";
 import { useCollaboration } from "../hooks/useCollaboration";
+=======
+import axios from "axios";
+import CommentWarning from "../components/CommentWarning";
+import { validateComment, generateWarnings } from "../js/speculativeWordBank";
+>>>>>>> realtime-voting
 
 import { verifyUser } from "../js/verifications";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Badges from "../components/Badge";
 
+<<<<<<< HEAD
 // Helper to get or create a stable user ID for this browser tab
 const getStableUserId = (backendId) => {
     // Prefer the backend ID if provided
@@ -31,6 +38,8 @@ const getStableUserId = (backendId) => {
     return newId;
 };
 
+=======
+>>>>>>> realtime-voting
 export default function PIS() {
     const { gtid } = useParams();
 
@@ -42,6 +51,7 @@ export default function PIS() {
     const [brotherA, setBrotherA] = useState({ firstName: '', lastName: '' });
     const [brotherB, setBrotherB] = useState({ firstName: '', lastName: '' });
     const [brotherC, setBrotherC] = useState({ firstName: '', lastName: '' });
+<<<<<<< HEAD
     const [currentUser, setCurrentUser] = useState(null);
 
     const navigate = useNavigate();
@@ -74,6 +84,11 @@ export default function PIS() {
         }
     }, [collaboration.documentState]);
 
+=======
+
+    const navigate = useNavigate();
+
+>>>>>>> realtime-voting
     const errorTitle = "Default Error Title";
     const errorDescription = "Default Error Description";
     const api = import.meta.env.VITE_API_PREFIX;
@@ -86,6 +101,7 @@ export default function PIS() {
                         navigate(`/error/${errorTitle}/${errorDescription}`);
                     }
 
+<<<<<<< HEAD
                     // Set current user for collaboration - make it stable across re-renders
                     if (!currentUser || !currentUser.id) {
                         const userId = getStableUserId(response.id);
@@ -97,6 +113,8 @@ export default function PIS() {
                         setCurrentUser(user);
                     }
 
+=======
+>>>>>>> realtime-voting
                     // Fetch rushee data
                     await axios.get(`${api}/rushee/${gtid}`)
                         .then((response) => {
@@ -108,8 +126,12 @@ export default function PIS() {
                                 response.data.payload.pis?.forEach((pis) => {
                                     existingAnswers[pis.question] = pis.answer;
                                 });
+<<<<<<< HEAD
                                 // Merge with any answers already present (e.g., from real-time doc state)
                                 setAnswers((prev) => ({ ...prev, ...existingAnswers }));
+=======
+                                setAnswers(existingAnswers);
+>>>>>>> realtime-voting
                             } else {
                                 navigate(`/error/${errorTitle}/${"Rushee with this GTID does not exist"}`);
                             }
@@ -266,6 +288,7 @@ export default function PIS() {
 
                     <div className="pt-24 p-4 pb-20">
                         <div className="container mx-auto px-4 max-w-4xl">
+<<<<<<< HEAD
                             {/* Collaboration Status */}
                             {collaboration.isConnected && (
                                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-apple">
@@ -278,6 +301,8 @@ export default function PIS() {
                                  </div>
                              )}
 
+=======
+>>>>>>> realtime-voting
                             {/* Profile Header */}
                             <div className="card-apple p-6 mb-6">
                                 <div className="flex flex-col md:flex-row items-start gap-6">
@@ -328,6 +353,7 @@ export default function PIS() {
                                 {/* Disclaimer Message */}
                                 <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-apple">
                                     <p className="text-apple-footnote text-orange-800 font-light">
+<<<<<<< HEAD
                                         <span className="font-normal">Note:</span> Multiple people can now collaborate on this form in real-time! 
                                         You'll see others' cursors and typing as they work. Only the main interviewer should submit when everyone is ready.
                                         {!collaboration.isConnected && (
@@ -335,6 +361,11 @@ export default function PIS() {
                                                 ⚠️ Real-time collaboration is currently offline. 
                                             </span>
                                         )}
+=======
+                                        <span className="font-normal">Note:</span> Only the brother who does the main interview should submit this form. 
+                                        The comments from the other two brothers should be taken from a shared Google Doc. If multiple people submit
+                                        the form, the comments there before will be deleted. 
+>>>>>>> realtime-voting
                                     </p>
                                 </div>
                                 
@@ -463,6 +494,7 @@ export default function PIS() {
                                                     </label>
                                                 </div>
                                             ) : (
+<<<<<<< HEAD
                                                 <div className="flex gap-3 items-start">
                                                     <div className="flex-1">
                                                         <CollaborativeTextarea
@@ -483,6 +515,25 @@ export default function PIS() {
                                                                 handleAnswerChange(question.question, newAnswer);
                                                             }}
                                                             disabled={!collaboration.isConnected && collaboration.connectedUsers.length > 0}
+=======
+                                                <div className="flex gap-3 items-center">
+                                                    <textarea
+                                                        className="input-apple flex-1 min-h-[120px] resize-y text-apple-footnote"
+                                                        placeholder="Your answer..."
+                                                        value={answers[question.question] || ""}
+                                                        onChange={(e) => handleAnswerChange(question.question, e.target.value)}
+                                                    />
+                                                    <div className="flex-shrink-0">
+                                                        <VoiceRecorder
+                                                            onTranscription={(transcription) => {
+                                                                // Append to existing text if there's already content
+                                                                const existingAnswer = answers[question.question] || "";
+                                                                const newAnswer = existingAnswer 
+                                                                    ? `${existingAnswer} ${transcription}` 
+                                                                    : transcription;
+                                                                handleAnswerChange(question.question, newAnswer);
+                                                            }}
+>>>>>>> realtime-voting
                                                         />
                                                     </div>
                                                 </div>
