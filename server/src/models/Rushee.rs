@@ -93,8 +93,6 @@ pub struct RusheeModel {
     pub access_code: String,
     pub pis_signup: PISSignup,
 }
-<<<<<<< HEAD
-=======
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum VoteOption {
@@ -119,4 +117,3 @@ pub struct RusheeVote {
     pub last_name: String,
     pub vote: VoteOption,
 }
->>>>>>> realtime-voting

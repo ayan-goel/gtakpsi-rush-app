@@ -46,8 +46,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "anyhow"
 version = "1.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -60,7 +58,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "69f7f8c3906b62b754cd5326047894316021dcfe5a194c8ea52bdd94934a3457"
 
 [[package]]
->>>>>>> realtime-voting
 name = "async-stream"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -239,8 +236,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "backon"
 version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -250,7 +245,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "backtrace"
 version = "0.3.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -389,8 +383,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "combine"
 version = "4.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -405,7 +397,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "convert_case"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -898,11 +889,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
-<<<<<<< HEAD
- "socket2",
-=======
  "socket2 0.5.8",
->>>>>>> realtime-voting
  "tokio",
  "tower-service",
  "tracing",
@@ -1105,11 +1092,7 @@ version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b58db92f96b720de98181bbbe63c831e87005ab460c1bf306eb2622b4707997f"
 dependencies = [
-<<<<<<< HEAD
- "socket2",
-=======
  "socket2 0.5.8",
->>>>>>> realtime-voting
  "widestring",
  "windows-sys 0.48.0",
  "winreg",
@@ -1193,15 +1176,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-<<<<<<< HEAD
-version = "0.2.169"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a"
-=======
 version = "0.2.174"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
->>>>>>> realtime-voting
 
 [[package]]
 name = "linked-hash-map"
@@ -1329,11 +1306,7 @@ dependencies = [
  "serde_with",
  "sha-1",
  "sha2",
-<<<<<<< HEAD
- "socket2",
-=======
  "socket2 0.5.8",
->>>>>>> realtime-voting
  "stringprep",
  "strsim",
  "take_mut",
@@ -1375,8 +1348,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "num-bigint"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1387,15 +1358,12 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "num-conv"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "num-integer"
 version = "0.1.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1405,7 +1373,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1586,8 +1553,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "redis"
 version = "0.32.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1613,7 +1578,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "redox_syscall"
 version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1835,10 +1799,7 @@ dependencies = [
 name = "server"
 version = "0.1.0"
 dependencies = [
-<<<<<<< HEAD
-=======
  "anyhow",
->>>>>>> realtime-voting
  "axum 0.6.20",
  "axum-extra",
  "bson",
@@ -1849,10 +1810,7 @@ dependencies = [
  "lambda_runtime",
  "mongodb",
  "rand",
-<<<<<<< HEAD
-=======
  "redis",
->>>>>>> realtime-voting
  "serde",
  "serde_json",
  "tokio",
@@ -1872,15 +1830,12 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "sha1_smol"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbfa15b3dddfee50a0fff136974b3e1bde555604ba463834a7eb7deb6417705d"
 
 [[package]]
->>>>>>> realtime-voting
 name = "sha2"
 version = "0.10.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1932,8 +1887,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "socket2"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1944,7 +1897,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "spin"
 version = "0.9.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2125,11 +2077,7 @@ dependencies = [
  "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
-<<<<<<< HEAD
- "socket2",
-=======
  "socket2 0.5.8",
->>>>>>> realtime-voting
  "tokio-macros",
  "windows-sys 0.52.0",
 ]
@@ -2498,8 +2446,6 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< HEAD
-=======
 name = "windows-sys"
 version = "0.59.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2509,7 +2455,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> realtime-voting
 name = "windows-targets"
 version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"

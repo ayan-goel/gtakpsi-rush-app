@@ -21,16 +21,9 @@ bson = "2.13.0"
 rand = "0.8.5"
 chrono = "0.4"
 dotenv = "0.15"
-<<<<<<< HEAD
-
-[[bin]]
-name = "server"
-path = "src/main.rs"
-=======
 redis = { version = "0.32.x", features = ["tokio-comp", "connection-manager"] }
 anyhow = "1.0.98"
 
 [[bin]]
 name = "server"
 path = "src/main.rs"
->>>>>>> realtime-voting

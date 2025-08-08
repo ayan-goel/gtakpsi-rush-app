@@ -606,8 +606,4 @@ pub async fn get_brother_pis(
             "message": "some network error occurred"
         }))),
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> realtime-voting

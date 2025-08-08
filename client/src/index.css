@@ -97,8 +97,6 @@
   .select-apple {
     @apply selection:bg-black selection:text-white;
   }
-<<<<<<< HEAD
-=======
 }
 
 @keyframes float {
@@ -115,5 +113,4 @@
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
->>>>>>> realtime-voting
 }

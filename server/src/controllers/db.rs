@@ -1,19 +1,13 @@
 use mongodb::{options::ClientOptions, Client, Collection};
 use std::sync::Arc;
-<<<<<<< HEAD
-=======
 use redis::aio::ConnectionManager;
 use redis::AsyncCommands;
->>>>>>> realtime-voting
 use tokio::sync::OnceCell;
 
 use crate::models::{misc::RushNight, pis::{PISQuestion, PISTimeslot}, Rushee::RusheeModel};
 
 pub static MONGO_CLIENT: OnceCell<Arc<Client>> = OnceCell::const_new();
-<<<<<<< HEAD
-=======
 pub static REDIS_CLIENT: OnceCell<Arc<ConnectionManager>> = OnceCell::const_new();
->>>>>>> realtime-voting
 
 pub async fn get_mongo_client() -> Arc<Client> {
     MONGO_CLIENT
@@ -27,13 +21,6 @@ pub async fn get_mongo_client() -> Arc<Client> {
         .clone()
 }
 
-<<<<<<< HEAD
-/// Get a reference to the MongoDB client
-pub fn get_client() -> Arc<Client> {
-    MONGO_CLIENT
-        .get()
-        .expect("MongoDB client is not initialized. Call `initialize_mongo_client` first.")
-=======
 pub async fn get_redis_conn() -> Arc<ConnectionManager> {
     REDIS_CLIENT
         .get_or_init(|| async {
@@ -53,7 +40,6 @@ pub fn get_client() -> Arc<Client> {
     MONGO_CLIENT
         .get()
         .expect("MongoDB client is not initialized. Call `get_mongo_client` first.")
->>>>>>> realtime-voting
         .clone()
 }
 
@@ -75,8 +61,4 @@ pub async fn get_pis_timeslots_client() -> Collection<PISTimeslot> {
 pub async fn get_rush_nights_client() -> Collection<RushNight> {
     let client = get_mongo_client().await;
     client.database("rush-app").collection("rush-nights")
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> realtime-voting
