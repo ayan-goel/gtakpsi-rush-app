@@ -1,24 +1,24 @@
 use axum::{
     extract::ws::{Message, WebSocket, WebSocketUpgrade},
-    extract::ConnectInfo,
+    extract::{ConnectInfo, Path},
     response::IntoResponse,
 };
-use axum::extract::Path;
 use dashmap::DashMap;
+use futures_util::{SinkExt, StreamExt};
 use redis::AsyncCommands;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::sync::mpsc;
+
 use crate::db::{get_redis_conn, get_redis_pubsub};
-use futures_util::{SinkExt, StreamExt};
 
 /// Global atomic counter for unique client IDs
 use std::sync::atomic::{AtomicUsize, Ordering};
 static NEXT_ID: AtomicUsize = AtomicUsize::new(1);
 
 /// Type alias for active WebSocket clients
-type ClientList = Arc<DashMap<usize, mpsc::UnboundedSender<Message>>>;
+pub type ClientList = Arc<DashMap<usize, mpsc::UnboundedSender<Message>>>;
 
-/// WebSocket route handler
+/// WebSocket route handler for admin page
 pub async fn admin_ws_handler(
     Path(id): Path<String>,
     ws: WebSocketUpgrade,
@@ -28,77 +28,103 @@ pub async fn admin_ws_handler(
     ws.on_upgrade(move |socket| handle_socket(socket, addr, clients, Some(id)))
 }
 
-/// Background task that listens for Redis pubsub and broadcasts to all clients
+/// Background task that listens to Redis pubsub channels and pushes updates to clients
 pub async fn admin_spawn_pubsub_listener(clients: ClientList) {
     let mut pubsub = get_redis_pubsub().await;
+
     pubsub.subscribe("vote_channel").await.expect("subscribe failed");
+    pubsub.subscribe("rushee").await.expect("subscribe failed");
+    pubsub.subscribe("question").await.expect("subscribe failed");
 
     tokio::spawn(async move {
         let mut stream = pubsub.on_message();
         while let Some(msg) = stream.next().await {
-            if msg.get_payload::<String>().is_err() {
-                continue;
-            }
+            let channel = msg.get_channel_name().to_string();
 
-            println!("📡 Received pubsub update for vote_channel");
+            if let Ok(payload) = msg.get_payload::<String>() {
+                match channel.as_str() {
+                    "vote_channel" => {
 
-            // Fetch all values from Redis hash (vote_log)
-            let redis = get_redis_conn().await;
-            let mut conn = redis.as_ref().clone();
+                        let redis = get_redis_conn().await;
+                        let mut conn = redis.as_ref().clone();
 
-            match conn.hvals::<_, Vec<String>>("vote_log").await {
-                Ok(values) => {
-                    let votes: Vec<serde_json::Value> = values
-                        .into_iter()
-                        .filter_map(|s| serde_json::from_str(&s).ok())
-                        .collect();
+                        match conn.hvals::<_, Vec<String>>("vote_log").await {
+                            Ok(values) => {
+                                let votes: Vec<serde_json::Value> = values
+                                    .into_iter()
+                                    .filter_map(|s| serde_json::from_str(&s).ok())
+                                    .collect();
 
-                    let msg = serde_json::json!({
-                        "type": "vote_update",
-                        "votes": votes
-                    });
+                                let msg = serde_json::json!({
+                                    "type": "vote_update",
+                                    "votes": votes
+                                });
 
-                    let msg_str = msg.to_string();
-                    let mut to_remove = Vec::new();
-
-                    for entry in clients.iter() {
-                        let (id, tx) = entry.pair();
-                        if tx.send(Message::Text(msg_str.clone())).is_err() {
-                            to_remove.push(*id);
+                                broadcast_to_clients(&clients, msg.to_string());
+                            }
+                            Err(e) => {
+                                println!("❌ Failed to fetch vote_log hash: {}", e);
+                            }
                         }
                     }
-
-                    for id in to_remove {
-                        clients.remove(&id);
-                        println!("🗑️ Removed disconnected client {}", id);
+                    "rushee" => {
+                        let msg = serde_json::json!({
+                            "type": "rushee_update",
+                            "rushee": payload
+                        });
+                        broadcast_to_clients(&clients, msg.to_string());
                     }
-                }
-                Err(e) => {
-                    println!("❌ Failed to fetch vote_log hash: {}", e);
+                    "question" => {
+                        let msg = serde_json::json!({
+                            "type": "question_update",
+                            "question": payload
+                        });
+                        broadcast_to_clients(&clients, msg.to_string());
+                    }
+                    _ => {}
                 }
             }
         }
     });
 }
 
-/// Handles a single WebSocket connection for the admin (vote broadcast-only)
-async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList, client_id: Option<String>) {
-println!("🔌 Client connected from {}", addr);
+/// Helper to send messages to all clients
+fn broadcast_to_clients(clients: &ClientList, msg_str: String) {
+    let mut to_remove = Vec::new();
+    for entry in clients.iter() {
+        let (id, tx) = entry.pair();
+        if tx.send(Message::Text(msg_str.clone())).is_err() {
+            to_remove.push(*id);
+        }
+    }
 
-    // Split the WebSocket - we only need the sender for broadcasts
+    for id in to_remove {
+        clients.remove(&id);
+        println!("🗑️ Removed disconnected client {}", id);
+    }
+}
+
+/// Handles a single WebSocket connection for the admin dashboard
+async fn handle_socket(
+    socket: WebSocket,
+    addr: SocketAddr,
+    clients: ClientList,
+    client_id: Option<String>,
+) {
+    println!("Admin client connected from {}", addr);
+
     let (mut ws_sender, mut ws_receiver) = socket.split();
-    
+
     let (tx, mut rx) = mpsc::unbounded_channel::<Message>();
     let id: usize = client_id
-    .and_then(|s| s.parse().ok())
-    .unwrap_or_else(|| NEXT_ID.fetch_add(1, Ordering::Relaxed));
+        .and_then(|s| s.parse().ok())
+        .unwrap_or_else(|| NEXT_ID.fetch_add(1, Ordering::Relaxed));
     clients.insert(id, tx.clone());
 
-    // Send initial Redis data to new client
+    // Initial vote log snapshot
     let redis = get_redis_conn().await;
-    let mut conn = (*redis).clone();
+    let mut conn = redis.as_ref().clone();
 
-    // Fetch current votes from hash
     match conn.hvals::<_, Vec<String>>("vote_log").await {
         Ok(values) => {
             let votes: Vec<serde_json::Value> = values
@@ -114,31 +140,72 @@ println!("🔌 Client connected from {}", addr);
             let _ = tx.send(Message::Text(msg.to_string()));
         }
         Err(e) => {
-            println!("❌ Redis error while fetching vote_log hash: {}", e);
-            let _ = tx.send(Message::Text("ERROR_LOADING_VOTES".to_string()));
+            println!("Redis error while fetching vote_log: {}", e);
         }
     }
 
+    // Initial rushee snapshot
+    match conn.get::<_, Option<String>>("rushee").await {
+        Ok(Some(data)) => {
+            let msg = serde_json::json!({
+                "type": "rushee_update",
+                "rushee": data
+            });
+            let _ = tx.send(Message::Text(msg.to_string()));
+        }
+        Ok(None) => {
+            let fallback_msg = serde_json::json!({
+                "type": "rushee_update",
+                "rushee": null
+            });
+            let _ = tx.send(Message::Text(fallback_msg.to_string()));
+        }
+        Err(e) => {
+            println!("Redis error while fetching rushee: {}", e);
+        }
+    }
 
-    // Task to send messages to this client
+    match conn.get::<_, Option<String>>("question").await {
+                Ok(Some(data)) => {
+            let msg = serde_json::json!({
+                "type": "question_update",
+                "question": data
+            });
+            let _ = tx.send(Message::Text(msg.to_string()));
+        }
+        Ok(None) => {
+            let fallback_msg = serde_json::json!({
+                "type": "question_update",
+                "question": null
+            });
+            let _ = tx.send(Message::Text(fallback_msg.to_string()));
+        }
+        Err(e) => {
+            println!("Redis error while fetching question: {}", e);
+        }
+    }
+
+    // Task to send messages to client
     let send_task = tokio::spawn(async move {
         while let Some(msg) = rx.recv().await {
             if ws_sender.send(msg).await.is_err() {
-                println!("❌ Failed to send to client {}, connection likely closed", id);
+                println!("Failed to send to client {}, connection likely closed", id);
                 break;
             }
         }
     });
 
-    // Task to monitor connection status (ignore incoming messages)
+    // Task to monitor for disconnects or client messages (ignored)
     let recv_task = tokio::spawn(async move {
         while let Some(msg) = ws_receiver.next().await {
             match msg {
                 Ok(Message::Close(_)) => {
-                    println!("Client {} sent close message", id);
+                    println!("Client {} sent close", id);
                     break;
                 }
-                Ok(Message::Ping(_)) => {}
+                Ok(Message::Ping(_)) => {
+                    println!("Ping from client {}", id);
+                }
                 Ok(Message::Text(_)) | Ok(Message::Binary(_)) => {}
                 Ok(Message::Pong(_)) => {}
                 Err(e) => {
@@ -149,17 +216,15 @@ println!("🔌 Client connected from {}", addr);
         }
     });
 
-    // Wait for either task to complete (connection closed or send failed)
     tokio::select! {
         _ = send_task => {
             println!("Send task completed for client {}", id);
         },
         _ = recv_task => {
-            println!("Connection monitoring completed for client {}", id);
-        },
+            println!("Recv task completed for client {}", id);
+        }
     }
 
-    // Clean up
     clients.remove(&id);
-    println!("Client {} disconnected", id);
+    println!("🔒 Client {} disconnected", id);
 }

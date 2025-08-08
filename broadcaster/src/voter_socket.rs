@@ -11,14 +11,11 @@ use tokio::sync::mpsc;
 use crate::db::{get_redis_conn, get_redis_pubsub};
 use futures_util::{SinkExt, StreamExt};
 
-/// Global atomic counter for unique client IDs
 use std::sync::atomic::{AtomicUsize, Ordering};
 static NEXT_ID: AtomicUsize = AtomicUsize::new(1);
 
-/// Type alias for active WebSocket clients
 pub type ClientList = Arc<DashMap<usize, mpsc::UnboundedSender<Message>>>;
 
-/// WebSocket route handler
 pub async fn ws_handler(
     Path(id): Path<String>,
     ws: WebSocketUpgrade,
@@ -28,66 +25,101 @@ pub async fn ws_handler(
     ws.on_upgrade(move |socket| handle_socket(socket, addr, clients, Some(id)))
 }
 
-/// Background task that listens for Redis pubsub and broadcasts to all clients
 pub async fn spawn_pubsub_listener(clients: ClientList) {
     let mut pubsub = get_redis_pubsub().await;
     pubsub.subscribe("rushee").await.expect("subscribe failed");
+    pubsub.subscribe("question").await.expect("subscribe failed");
 
     tokio::spawn(async move {
         let mut stream = pubsub.on_message();
         while let Some(msg) = stream.next().await {
+            let channel = msg.get_channel_name().to_string();
             if let Ok(payload) = msg.get_payload::<String>() {
-                println!("📡 Broadcast from Redis: {payload}");
-                
-                // Remove disconnected clients while broadcasting
-                let mut to_remove = Vec::new();
-                for entry in clients.iter() {
-                    let (id, tx) = entry.pair();
-                    if tx.send(Message::Text(payload.clone())).is_err() {
-                        to_remove.push(*id);
-                    }
-                }
-                
-                // Clean up disconnected clients
-                for id in to_remove {
-                    clients.remove(&id);
-                    println!("🗑️ Removed disconnected client {}", id);
-                }
+                let msg = match channel.as_str() {
+                    "rushee" => serde_json::json!({
+                        "type": "rushee_update",
+                        "rushee": payload
+                    }),
+                    "question" => serde_json::json!({
+                        "type": "question_update",
+                        "question": payload
+                    }),
+                    _ => continue,
+                };
+                broadcast_to_clients(&clients, msg.to_string());
             }
         }
     });
 }
 
-/// Handles a single WebSocket connection (broadcast-only)
+fn broadcast_to_clients(clients: &ClientList, msg_str: String) {
+    let mut to_remove = Vec::new();
+    for entry in clients.iter() {
+        let (id, tx) = entry.pair();
+        if tx.send(Message::Text(msg_str.clone())).is_err() {
+            to_remove.push(*id);
+        }
+    }
+
+    for id in to_remove {
+        clients.remove(&id);
+        println!("🗑️ Removed disconnected client {}", id);
+    }
+}
+
 async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList, client_id: Option<String>) {
     println!("🔌 Client connected from {}", addr);
 
-    // Split the WebSocket - we only need the sender for broadcasts
     let (mut ws_sender, mut ws_receiver) = socket.split();
-    
     let (tx, mut rx) = mpsc::unbounded_channel::<Message>();
     let id: usize = client_id
-    .and_then(|s| s.parse().ok())
-    .unwrap_or_else(|| NEXT_ID.fetch_add(1, Ordering::Relaxed));
+        .and_then(|s| s.parse().ok())
+        .unwrap_or_else(|| NEXT_ID.fetch_add(1, Ordering::Relaxed));
     clients.insert(id, tx.clone());
 
-    // Send initial Redis data to new client
     let redis = get_redis_conn().await;
     let mut conn = (*redis).clone();
+
     match conn.get::<_, Option<String>>("rushee").await {
         Ok(Some(data)) => {
-            println!("📤 Sending Redis 'rushee' to client {}: {data}", id);
-            let _ = tx.send(Message::Text(data));
+            let msg = serde_json::json!({
+                "type": "rushee_update",
+                "rushee": data
+            });
+            let _ = tx.send(Message::Text(msg.to_string()));
         }
         Ok(None) => {
-            let _ = tx.send(Message::Text("NO_RUSHEE".to_string()));
+            let fallback_msg = serde_json::json!({
+                "type": "rushee_update",
+                "rushee": null
+            });
+            let _ = tx.send(Message::Text(fallback_msg.to_string()));
         }
         Err(e) => {
             println!("❌ Redis error while fetching 'rushee': {e}");
         }
     }
 
-    // Task to send messages to this client
+    match conn.get::<_, Option<String>>("question").await {
+        Ok(Some(data)) => {
+            let msg = serde_json::json!({
+                "type": "question_update",
+                "question": data
+            });
+            let _ = tx.send(Message::Text(msg.to_string()));
+        }
+        Ok(None) => {
+            let fallback_msg = serde_json::json!({
+                "type": "question_update",
+                "question": null
+            });
+            let _ = tx.send(Message::Text(fallback_msg.to_string()));
+        }
+        Err(e) => {
+            println!("❌ Redis error while fetching 'question': {e}");
+        }
+    }
+
     let send_task = tokio::spawn(async move {
         while let Some(msg) = rx.recv().await {
             if ws_sender.send(msg).await.is_err() {
@@ -97,7 +129,6 @@ async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList,
         }
     });
 
-    // Task to monitor connection status (ignore incoming messages)
     let recv_task = tokio::spawn(async move {
         while let Some(msg) = ws_receiver.next().await {
             match msg {
@@ -106,17 +137,10 @@ async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList,
                     break;
                 }
                 Ok(Message::Ping(_)) => {
-                    // WebSocket pings are usually handled automatically by axum
-                    // but we can log them if needed
                     println!("🏓 Ping from client {}", id);
                 }
-                Ok(Message::Text(_)) | Ok(Message::Binary(_)) => {
-                    // Silently ignore incoming data messages
-                    // Optionally log: println!("📥 Ignoring message from client {}", id);
-                }
-                Ok(Message::Pong(_)) => {
-                    // Pong responses, usually automatic
-                }
+                Ok(Message::Text(_)) | Ok(Message::Binary(_)) => {}
+                Ok(Message::Pong(_)) => {}
                 Err(e) => {
                     println!("❌ WebSocket error for client {}: {}", id, e);
                     break;
@@ -125,7 +149,6 @@ async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList,
         }
     });
 
-    // Wait for either task to complete (connection closed or send failed)
     tokio::select! {
         _ = send_task => {
             println!("📤 Send task completed for client {}", id);
@@ -135,7 +158,6 @@ async fn handle_socket(socket: WebSocket, addr: SocketAddr, clients: ClientList,
         },
     }
 
-    // Clean up
     clients.remove(&id);
     println!("🔒 Client {} disconnected", id);
 }

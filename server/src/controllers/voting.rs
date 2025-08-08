@@ -1,9 +1,6 @@
 use crate::middlewares::rushee;
 use crate::models::Rushee::{IncomingRusheeVote, RusheeVote, VoteOption};
 use anyhow::{Error, Result};
-/**
- * Controllers for voting
- */
 use axum::{
     extract::Path,
     http::StatusCode,
@@ -12,17 +9,45 @@ use axum::{
     Router,
 };
 use redis::AsyncCommands;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, to_string, Value};
 use std::sync::Arc;
 
 use super::db::get_redis_conn;
 use crate::middlewares::rushee::fetch_rushee;
+use crate::middlewares::voting::{fetch_question, fetch_rushee_from_redis};
+use crate::models::Rushee::RusheeModel;
+
+use serde_json::from_str;
 
 #[derive(Debug, Deserialize)]
 pub struct ChangeRusheePayload {
-    gtid: String,
+    pub gtid: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct ChangeElibigilityPayload {
+    pub gtid: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct GetElibilityPayload {
+    pub ids: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PostQuestionPayload {
+    pub question: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct QuestionAndRushee {
+    pub question: String,
+    pub rushee: RusheeModel,
+}
+
+const INEGLIBLE_BROTHERS: &str = "ineligible_brothers";
+const PLACEHOLDER_QUESTION: &str = "NO_QUESTION";
 
 /**
  * Posts a rushee to the Redis DB
@@ -33,32 +58,73 @@ pub struct ChangeRusheePayload {
 pub async fn change_rushee(
     Json(payload): Json<ChangeRusheePayload>,
 ) -> Result<Json<Value>, StatusCode> {
-    // first, fetch rushee using their gtid
     let rushee_result = fetch_rushee(payload.gtid).await;
 
     match rushee_result {
         Ok(rushee) => {
-            // update redis to show this rushee
-            let key = "rushee";
-            let redis_conn = get_redis_conn().await;
-            let serialized_rushee =
-                to_string(&rushee).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?; // because redis is key-value based
             let mut redis = get_redis_conn().await.as_ref().clone();
 
+            // Serialize and store rushee under its own key
+            let serialized_rushee = to_string(&rushee).map_err(|e| {
+                println!("Failed to serialize rushee: {:?}", e);
+                StatusCode::INTERNAL_SERVER_ERROR
+            })?;
+
+            let _: () = redis.set("rushee", &serialized_rushee).await.map_err(|e| {
+                println!("Failed to set Redis key 'rushee': {:?}", e);
+                StatusCode::INTERNAL_SERVER_ERROR
+            })?;
+
+            // Publish just the rushee to the "rushee" channel
             let _: () = redis
-                .publish(key, serialized_rushee)
+                .publish("rushee", &serialized_rushee)
                 .await
-                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+                .map_err(|e| {
+                    println!("Failed to publish to Redis channel 'rushee': {:?}", e);
+                    StatusCode::INTERNAL_SERVER_ERROR
+                })?;
 
             Ok(Json(json!({
                 "status": "success",
-                "rushee": rushee
+                "message": "Rushee set and published"
             })))
         }
-        Err(_) => Err(StatusCode::NOT_FOUND),
+
+        Err(e) => {
+            println!("Rushee not found: {:?}", e);
+            Err(StatusCode::NOT_FOUND)
+        }
     }
 }
 
+pub async fn get_rushee() -> Result<Json<Value>, StatusCode> {
+    let redis_conn = get_redis_conn().await;
+    let mut redis = redis_conn.as_ref().clone();
+
+    // Attempt to get the "rushee" key from Redis
+    let raw: Option<String> = redis
+        .get("rushee")
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    match raw {
+        Some(data) => {
+            let deserialized: QuestionAndRushee =
+                from_str(&data).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+            Ok(Json(json!({
+                "status": "success",
+                "rushee": deserialized
+            })))
+        }
+        None => Err(StatusCode::NOT_FOUND),
+    }
+}
+
+/**
+ * Helper function to map a vote to the proper enum
+ * @param vote
+ */
 fn map_vote(vote: String) -> Result<VoteOption, Error> {
     match vote.to_lowercase().as_str() {
         "yes" => Ok(VoteOption::Yes),
@@ -83,12 +149,14 @@ pub async fn handle_rushee_vote(
     let serialized_rushee_vote: String =
         to_string(&rusheeVote).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    // Push to Redis first, then publish notification
+    // Push to Redis first, then publish notification!
     let mut conn = get_redis_conn().await.as_ref().clone();
 
     // check if brother has already voted
     let key = "vote_log";
-    let already_voted: bool = conn.hexists(key, rusheeVote.brother_id.clone()).await
+    let already_voted: bool = conn
+        .hexists(key, rusheeVote.brother_id.clone())
+        .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     if already_voted {
@@ -97,7 +165,20 @@ pub async fn handle_rushee_vote(
             "message": "Brother has already voted"
         })));
     }
-    
+
+    // check if brother is in the ineglible voters
+    let is_ineligible: bool = conn
+        .sismember(INEGLIBLE_BROTHERS, &rusheeVote.brother_id)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    if is_ineligible {
+        return Ok(Json(json!({
+            "status": "ineligible",
+            "message": "Brother is not eligible to vote"
+        })));
+    }
+
     // Step 1: Add the vote to the log
     conn.hset(key, rusheeVote.brother_id.clone(), serialized_rushee_vote)
         .await
@@ -121,24 +202,102 @@ pub async fn clear_votes() -> Result<Json<Value>, StatusCode> {
     let mut conn = conn_arc.as_ref().clone();
 
     // 1) Delete the entire vote_log hash
-    conn.del("vote_log")
-        .await
-        .map_err(|e| {
-            println!("❌ Failed to clear vote_log: {}", e);
-            StatusCode::INTERNAL_SERVER_ERROR
-        })?;
+    conn.del("vote_log").await.map_err(|e| {
+        println!("❌ Failed to clear vote_log: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
 
     // 2) Publish a notification so everyone knows votes have been reset
-    conn.publish("vote_channel", "cleared")
-        .await
-        .map_err(|e| {
-            println!("❌ Failed to publish clear notification: {}", e);
-            StatusCode::INTERNAL_SERVER_ERROR
-        })?;
+    conn.publish("vote_channel", "cleared").await.map_err(|e| {
+        println!("❌ Failed to publish clear notification: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
 
     // 3) Return success
     Ok(Json(json!({
         "status": "success",
         "message": "All votes cleared"
+    })))
+}
+
+pub async fn make_eligible(
+    Json(payload): Json<ChangeElibigilityPayload>,
+) -> Result<Json<Value>, StatusCode> {
+    let mut conn = get_redis_conn().await.as_ref().clone();
+
+    let removed: i32 = conn
+        .srem(INEGLIBLE_BROTHERS, &payload.gtid)
+        .await
+        .map_err(|e| {
+            println!("Redis SREM error: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    Ok(Json(json!({
+        "status": "success",
+        "message": "Removed brother"
+    })))
+}
+
+pub async fn make_ineligible(
+    Json(payload): Json<ChangeElibigilityPayload>,
+) -> Result<Json<Value>, StatusCode> {
+    let mut conn = get_redis_conn().await.as_ref().clone();
+
+    println!("made Ineligible");
+
+    conn.sadd(INEGLIBLE_BROTHERS, &payload.gtid)
+        .await
+        .map_err(|e| {
+            println!("Redis SADD error: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    Ok(Json(json!({
+        "status": "success",
+        "message": "GTID marked ineligible"
+    })))
+}
+
+pub async fn get_elibibility() -> Result<Json<Value>, StatusCode> {
+    let mut conn = get_redis_conn().await.as_ref().clone();
+
+    let ineligible_ids: Vec<String> = conn.smembers(INEGLIBLE_BROTHERS).await.map_err(|e| {
+        println!("Redis SMEMBERS error: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(Json(json!({
+        "status": "success",
+        "ineligible_ids": ineligible_ids
+    })))
+}
+
+pub async fn post_question(
+    Json(payload): Json<PostQuestionPayload>,
+) -> Result<Json<Value>, StatusCode> {
+    let mut redis = get_redis_conn().await.as_ref().clone();
+
+    // Save the question under its own key
+    let _: () = redis
+        .set("question", &payload.question)
+        .await
+        .map_err(|e| {
+            println!("❌ Failed to set Redis key 'question': {:?}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    // Publish just the question to the "question" channel
+    let _: () = redis
+        .publish("question", &payload.question)
+        .await
+        .map_err(|e| {
+            println!("❌ Failed to publish to Redis channel 'question': {:?}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    Ok(Json(json!({
+        "status": "success",
+        "message": "Question set and published"
     })))
 }
