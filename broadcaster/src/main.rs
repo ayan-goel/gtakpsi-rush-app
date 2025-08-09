@@ -15,26 +15,26 @@ async fn main() {
     let admins: ClientList = Arc::new(dashmap::DashMap::new());
 
     // Start background pubsub listeners
-    spawn_pubsub_listener(clients.clone()).await;
-    admin_spawn_pubsub_listener(admins.clone()).await;
+    // spawn_pubsub_listener(clients.clone()).await;
+    // admin_spawn_pubsub_listener(admins.clone()).await;
 
     let app = Router::new()
 
-        .route("/", get(|| async { "ok" })) // health check
-        .route(
-            "/voter/:id",
-            get({
-                let clients = clients.clone();
-                move |path, ws, addr| ws_handler(path, ws, addr, clients)
-            }),
-        )
-        .route(
-            "/admin/:id",
-            get({
-                let admins = admins.clone();
-                move |path, ws, addr| admin_ws_handler(path, ws, addr, admins)
-            }),
-        );
+        .route("/", get(|| async { "ok" })); // health check
+        // .route(
+        //     "/voter/:id",
+        //     get({
+        //         let clients = clients.clone();
+        //         move |path, ws, addr| ws_handler(path, ws, addr, clients)
+        //     }),
+        // )
+        // .route(
+        //     "/admin/:id",
+        //     get({
+        //         let admins = admins.clone();
+        //         move |path, ws, addr| admin_ws_handler(path, ws, addr, admins)
+        //     }),
+        // );
 
 
     let port: u16 = env::var("PORT").ok()
