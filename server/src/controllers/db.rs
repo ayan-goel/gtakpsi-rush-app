@@ -9,10 +9,13 @@ use crate::models::{misc::RushNight, pis::{PISQuestion, PISTimeslot}, Rushee::Ru
 pub static MONGO_CLIENT: OnceCell<Arc<Client>> = OnceCell::const_new();
 pub static REDIS_CLIENT: OnceCell<Arc<ConnectionManager>> = OnceCell::const_new();
 
+const MONGO_URL: &str = "mongodb+srv://gtakpsisoftware:brznOWH0oPA9fT5N@gtakpsi.bf6r1.mongodb.net/?connectTimeoutMS=3000&socketTimeoutMS=300000";
+const REDIS_URL: &str = "redis://default:RmJWHVflTRWZvAGdIVcqHOUnICJpNkzZ@yamabiko.proxy.rlwy.net:50054";
+
 pub async fn get_mongo_client() -> Arc<Client> {
     MONGO_CLIENT
         .get_or_init(|| async {
-            let uri = "mongodb+srv://gtakpsisoftware:brznOWH0oPA9fT5N@gtakpsi.bf6r1.mongodb.net/?connectTimeoutMS=3000&socketTimeoutMS=300000";
+            let uri = MONGO_URL;
             let client_options = ClientOptions::parse(uri).await.unwrap();
             let client = Client::with_options(client_options).unwrap();
             Arc::new(client)
@@ -24,7 +27,7 @@ pub async fn get_mongo_client() -> Arc<Client> {
 pub async fn get_redis_conn() -> Arc<ConnectionManager> {
     REDIS_CLIENT
         .get_or_init(|| async {
-            let url = "redis://127.0.0.1:6379";
+            let url = REDIS_URL;
             let client = redis::Client::open(url).expect("Invalid Redis URL");
             let manager = ConnectionManager::new(client)
                 .await
