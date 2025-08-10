@@ -7,6 +7,8 @@ use std::{env, net::SocketAddr, sync::Arc};
 use voter_socket::{ws_handler, ClientList, spawn_pubsub_listener};
 use admin_socket::{admin_ws_handler, admin_spawn_pubsub_listener};
 
+use dotenvy::dotenv;
+
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
@@ -39,7 +41,7 @@ async fn main() {
 
     let port: u16 = env::var("PORT").ok()
         .and_then(|p| p.parse().ok())
-        .unwrap_or(3000);
+        .unwrap_or(4000);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
     println!("Broadcaster listening on 0.0.0.0:{port}");

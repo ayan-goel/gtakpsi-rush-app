@@ -1,24 +1,27 @@
-use std::sync::Arc;
 use redis::aio::ConnectionManager;
 use redis::AsyncCommands;
-use tokio::sync::OnceCell;
 use redis::PubSub;
+use std::env;
+use std::sync::Arc;
+use tokio::sync::OnceCell;
 
 pub static REDIS_CLIENT: OnceCell<Arc<ConnectionManager>> = OnceCell::const_new();
 
-const MONGO_URL: &str = "redis://default:RmJWHVflTRWZvAGdIVcqHOUnICJpNkzZ@yamabiko.proxy.rlwy.net:50054";
-
 pub async fn get_redis_pubsub() -> redis::aio::PubSub {
-    let url = MONGO_URL;
+    let url = env::var("REDIS_URL").unwrap_or_else(|_| "redis://localhost:6379".to_string());
     let client = redis::Client::open(url).expect("Invalid Redis URL");
-    let conn = client.get_async_connection().await.expect("PubSub conn failed");
+    let conn = client
+        .get_async_connection()
+        .await
+        .expect("PubSub conn failed");
     conn.into_pubsub()
 }
 
 pub async fn get_redis_conn() -> Arc<ConnectionManager> {
     REDIS_CLIENT
         .get_or_init(|| async {
-            let url = MONGO_URL;
+            let url =
+                env::var("REDIS_URL").unwrap_or_else(|_| "redis://localhost:6379".to_string());
             let client = redis::Client::open(url).expect("Invalid Redis URL");
             let manager = ConnectionManager::new(client)
                 .await
