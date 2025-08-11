@@ -46,6 +46,11 @@ async fn main() -> Result<(), Error> {
     // i.e with: `GET /test-stage/todo/id/123` without: `GET /todo/id/123`
     set_var("AWS_LAMBDA_HTTP_IGNORE_STAGE_IN_PATH", "true");
 
+    // start crypto runtime, required to connect to redis instance
+    rustls::crypto::ring::default_provider()
+        .install_default()
+        .expect("install rustls crypto provider");
+
     // required to enable CloudWatch error logging by the runtime 
     // tracing::init_default_subscriber();
 

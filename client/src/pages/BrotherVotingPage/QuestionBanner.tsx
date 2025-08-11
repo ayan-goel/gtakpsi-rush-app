@@ -9,8 +9,7 @@ import axios from 'axios'
 const votingOptions = ["Yes", "No", "Abstain"];
 
 export default function QuestionBanner() {
-    const { question } = useBrotherVotingContext();
-    if (!question) return null;
+    const { question, setQuestion } = useBrotherVotingContext();
 
     const storedUser: string | null = localStorage.getItem('user')
 
@@ -23,7 +22,15 @@ export default function QuestionBanner() {
     const api = import.meta.env.VITE_API_PREFIX;
 
     const handleVote = async (vote: string) => {
-        console.log(`Vote: ${vote}`);
+
+        if (!question) {
+            toast.error("No question has been set", {
+                position: "top-center",
+                autoClose: 3000,
+                theme: "dark",
+            });
+            return;
+        }
 
         const payload = {
             brother_id: user._id,
@@ -75,6 +82,7 @@ export default function QuestionBanner() {
     return (
         <div className="relative w-full h-[240px] rounded-apple-xl overflow-hidden bg-gradient-to-br from-apple-gray-100 via-white to-apple-gray-50 shadow-md mb-8">
             {/* Floating question marks */}
+            <h1>Hello</h1>
             {Array.from({ length: 14 }).map((_, idx) => (
                 <span
                     key={idx}
@@ -94,7 +102,7 @@ export default function QuestionBanner() {
             <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center space-y-6">
                 <SplitText
                     key={question}
-                    text={question}
+                    text={question ? question : "No Question Set"}
                     splitType="words"
                     className="text-4xl sm:text-5xl font-semibold text-apple-gray-800 drop-shadow-sm"
                     duration={0.5}

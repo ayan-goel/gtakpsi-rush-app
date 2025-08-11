@@ -10,7 +10,7 @@ pub static MONGO_CLIENT: OnceCell<Arc<Client>> = OnceCell::const_new();
 pub static REDIS_CLIENT: OnceCell<Arc<ConnectionManager>> = OnceCell::const_new();
 
 const MONGO_URL: &str = "mongodb+srv://gtakpsisoftware:brznOWH0oPA9fT5N@gtakpsi.bf6r1.mongodb.net/?connectTimeoutMS=3000&socketTimeoutMS=300000";
-const REDIS_URL: &str = "redis://default:RmJWHVflTRWZvAGdIVcqHOUnICJpNkzZ@yamabiko.proxy.rlwy.net:50054";
+const REDIS_URL: &str = "rediss://red-d2cgjrruibrs738g6170:w4V7wGssoYB7tD5MHqln1rrJClFnElIg@virginia-keyvalue.render.com:6379";
 
 pub async fn get_mongo_client() -> Arc<Client> {
     MONGO_CLIENT
