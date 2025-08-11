@@ -64,11 +64,10 @@ export default function RusheePreviewCard() {
         setDropdownOpen(false);
     };
 
-    if (!rushee) return null;
-
     return (
         <div className="relative w-full">
-            <div
+            
+            {rushee ? <div
                 onClick={handleClick}
                 className="card-apple flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-apple hover:shadow-md transition-all duration-200 cursor-pointer"
             >
@@ -106,7 +105,10 @@ export default function RusheePreviewCard() {
                         </div>
                     )}
                 </div>
-            </div>
+            </div> : <div
+                onClick={handleClick}
+                className="card-apple flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-apple hover:shadow-md transition-all duration-200 cursor-pointer"
+            > No Rushee Selected </div>}
 
             {dropdownOpen && (
                 <div className="absolute z-50 mt-2 left-0 w-full bg-white border border-apple-gray-200 rounded-apple shadow-lg max-h-64 overflow-y-auto">
