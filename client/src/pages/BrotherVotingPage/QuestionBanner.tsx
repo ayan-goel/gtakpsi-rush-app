@@ -82,7 +82,6 @@ export default function QuestionBanner() {
     return (
         <div className="relative w-full h-[240px] rounded-apple-xl overflow-hidden bg-gradient-to-br from-apple-gray-100 via-white to-apple-gray-50 shadow-md mb-8">
             {/* Floating question marks */}
-            <h1>Hello</h1>
             {Array.from({ length: 14 }).map((_, idx) => (
                 <span
                     key={idx}
