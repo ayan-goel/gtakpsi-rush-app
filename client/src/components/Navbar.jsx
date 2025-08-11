@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { logout } from "../js/user";
@@ -7,7 +7,33 @@ import { verifyUser } from "../js/verifications";
 export default function Navbar(props) {
     const [showMenu, setShowMenu] = useState(false);
     const [showMore, setShowMore] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const stripped = props.stripped ? props.stripped : false;
+
+    useEffect(() => {
+        async function checkAuth() {
+            try {
+                const authenticated = await verifyUser();
+                setIsAuthenticated(authenticated);
+            } catch (error) {
+                setIsAuthenticated(false);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        
+        checkAuth();
+    }, []);
+
+    // Don't render navbar if user is not authenticated
+    if (isLoading) {
+        return null; // or a loading spinner if you prefer
+    }
+    
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <div className="fixed z-50 w-full navbar-apple">
@@ -132,19 +158,17 @@ export default function Navbar(props) {
                                 )}
                             </li>
 
-                            {verifyUser() ? (
-                                <li>
-                                    <p
-                                        onClick={() => {
-                                            logout();
-                                            window.location.reload();
-                                        }}
-                                        className="block py-2 px-4 text-black rounded-apple hover:bg-apple-gray-100 transition-colors duration-200 md:p-2 cursor-pointer"
-                                    >
-                                        Logout
-                                    </p>
-                                </li>
-                            ) : null}
+                            <li>
+                                <p
+                                    onClick={() => {
+                                        logout();
+                                        window.location.reload();
+                                    }}
+                                    className="block py-2 px-4 text-black rounded-apple hover:bg-apple-gray-100 transition-colors duration-200 md:p-2 cursor-pointer"
+                                >
+                                    Logout
+                                </p>
+                            </li>
                         </ul>
                     </div>
                 </div>

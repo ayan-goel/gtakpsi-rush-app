@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { AdminVotingContextProvider, useAdminVotingContext } from "./AdminVotingContext";
 import QuestionDisplay from "./QuestionDisplay";
@@ -15,11 +16,19 @@ function Content() {
 
     const websocketAPI: string = import.meta.env.VITE_BROADCASTER_API_PREFIX;
     const socketRef = useRef<WebSocket | null>(null);
+    const navigate = useNavigate();
 
     const storedUser: string | null = localStorage.getItem('user')
 
+    useEffect(() => {
+        if (!storedUser) {
+            navigate("/login");
+            return;
+        }
+    }, [storedUser, navigate]);
+
     if (!storedUser) {
-        return <NotFound/>
+        return null;
     }
 
     const user: Brother = JSON.parse(storedUser)
