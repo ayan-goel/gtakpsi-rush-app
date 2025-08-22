@@ -72,7 +72,7 @@
         "question_type": "Long"
     },
     {
-        "question": "Group Activity Comments [Brother A]",
+        "question": "[BROTHER A] Group Activity Comments",
         "question_type": "Long"
     },
     {
@@ -84,7 +84,7 @@
         "question_type": "Long"
     },
     {
-        "question": "Group Activity Comments [Brother B]",
+        "question": "[Brother B] Group Activity Comments",
         "question_type": "Long"
     },
     {
@@ -96,7 +96,7 @@
         "question_type": "Long"
     },
     {
-        "question": "Group Activity Comments [Brother C]",
+        "question": "[BROTHER C] Group Activity Comments",
         "question_type": "Long"
     },
     {
