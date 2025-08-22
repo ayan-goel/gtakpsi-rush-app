@@ -138,22 +138,7 @@ const CollaborativeTextarea = ({
                 </div>
             )}
             
-            {/* Typing indicators */}
-            {typingInThisField.length > 0 && (
-                <div className="absolute -bottom-6 left-0 flex items-center space-x-2">
-                    <div className="flex space-x-1">
-                        <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
-                        <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                        {typingInThisField.length === 1 
-                            ? `${typingInThisField[0].userName} is typing...`
-                            : `${typingInThisField.length} people are typing...`
-                        }
-                    </span>
-                </div>
-            )}
+
             
             {/* Other users' cursors */}
             {otherUserCursors.map((user, index) => {
