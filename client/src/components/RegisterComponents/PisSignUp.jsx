@@ -79,7 +79,7 @@ export default function PisSignUp(props) {
                             {/* Header Section */}
                             <div className="mb-8">
                                 <h1 className="mb-3 text-apple-large font-light text-black">
-                                    Choose Your PIS Timeslot
+                                    Choose Your PIS Start Time
                                 </h1>
                                 <div className="w-16 h-0.5 bg-black mx-auto mb-4"></div>
                                 <p className="text-apple-subheadline text-apple-gray-600 font-light max-w-2xl mx-auto">
@@ -94,7 +94,7 @@ export default function PisSignUp(props) {
                                         <span className="text-orange-500 text-lg mt-0.5">⚠️</span>
                                         <div className="text-left">
                                             <p className="text-apple-body text-orange-800 font-normal leading-relaxed">
-                                                <strong className="font-medium text-orange-900">Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to.</strong> 
+                                                <strong className="font-medium text-orange-900">Please do not sign up for a Wednesday (September 10th) timeslot unless you absolutely have to. </strong> 
                                                 If you must, please email <a href="mailto:vmiriyapalli@gatech.edu" className="text-orange-700 underline hover:text-orange-600 transition-colors duration-200">vmiriyapalli@gatech.edu</a> with a reason as to why and she will schedule you between 8:00 PM and 10:15 PM.
                                             </p>
                                         </div>
@@ -155,19 +155,50 @@ export default function PisSignUp(props) {
                                         ))}
                                 </div>
                             </div>
-                            {/* Selected Slot Confirmation */}
+                            {/* Flexibility Checkbox */}
                             {props.selectedSlot && (
                                 <div className="mt-8 flex justify-center">
-                                    <div className="card-apple p-4 inline-block">
-                                        <p className="text-apple-body text-black font-light">
-                                            <span className="font-medium">Selected:</span> {props.selectedSlot.time.toLocaleString()}
-                                        </p>
+                                    <div className="card-apple p-6 inline-block">
+                                        <label className="flex items-start cursor-pointer group">
+                                            <div className="relative flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={props.flexWindow}
+                                                    onChange={(e) => props.setFlexWindow(e.target.checked)}
+                                                    className="sr-only"
+                                                />
+                                                <div className={`w-5 h-5 rounded-md border-2 transition-all duration-200 mr-4 flex items-center justify-center ${
+                                                    props.flexWindow 
+                                                        ? "bg-black border-black" 
+                                                        : "bg-white border-apple-gray-300 group-hover:border-apple-gray-400"
+                                                }`}>
+                                                    {props.flexWindow && (
+                                                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="text-apple-body text-black font-medium">
+                                                    Flex Window: I can shift my start time +/-30 minutes if needed
+                                                </p>
+                                                <p className="text-apple-caption1 text-apple-gray-600 font-light mt-1">
+                                                    This helps with scheduling flexibility
+                                                </p>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
                             )}
                             
                             {/* Submit Button */}
-                            <div className="mt-8">
+                            <div className="mt-8 flex flex-col items-center">
+                                {props.selectedSlot && (
+                                    <p className="text-apple-body text-apple-gray-600 font-light mb-4">
+                                        Selected: <span className="font-medium text-black">{props.selectedSlot.time.toLocaleString()}</span>
+                                    </p>
+                                )}
                                 <button
                                     onClick={props.func}
                                     disabled={!props.selectedSlot}

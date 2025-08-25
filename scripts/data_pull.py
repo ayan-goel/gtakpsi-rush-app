@@ -23,7 +23,8 @@ for rushee in rushees:
         'email': rushee.get('email', ''),
         'gtid': rushee.get('gtid', ''),
         'major': rushee.get('major', ''),
-        'class': rushee.get('class', '')
+        'class': rushee.get('class', ''),
+        'flex_window': 'Yes' if rushee.get('flex_window', False) else 'No'
     })
 
 # Create a DataFrame
@@ -35,7 +36,8 @@ df = pd.DataFrame(data, columns=[
     'email',
     'gtid',
     'major',
-    'class'
+    'class',
+    'flex_window'
 ])
 
 # Export to Excel (requires `openpyxl` package)

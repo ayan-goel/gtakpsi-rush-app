@@ -32,6 +32,7 @@ pub struct PISSignup {
     pub second_brother_last_name: String,
     pub third_brother_first_name: String,
     pub third_brother_last_name: String,
+    pub flex_window: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

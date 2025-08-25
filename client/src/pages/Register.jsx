@@ -41,6 +41,7 @@ export default function Register() {
 
     const [image, setImage] = useState()
     const [selectedSlot, setSelectedSlot] = useState(null);
+    const [flexWindow, setFlexWindow] = useState(false);
 
     const [accessCode, setAccessCode] = useState()
 
@@ -233,6 +234,7 @@ export default function Register() {
             pis_meeting_id: "meeting123",
             pis_timeslot: selectedSlot.time, // ISO 8601 format
             pis_link: "https://example.com/pis_meeting",
+            flex_window: flexWindow,
         };
 
         try {
@@ -310,6 +312,8 @@ export default function Register() {
                         {page == 2 ? <PisSignUp
                             selectedSlot={selectedSlot}
                             setSelectedSlot={setSelectedSlot}
+                            flexWindow={flexWindow}
+                            setFlexWindow={setFlexWindow}
                             func={pis_submit}
                         /> : <div>
 

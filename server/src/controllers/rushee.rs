@@ -128,7 +128,9 @@ pub async fn signup(Json(payload): Json<IncomingRushee>) -> Result<Json<Value>, 
             second_brother_last_name: "none".to_string(),
             third_brother_first_name: "none".to_string(),
             third_brother_last_name: "none".to_string(),
+            flex_window: payload.flex_window,
         },
+        flex_window: payload.flex_window,
     };
 
     let result = collection.insert_one(new_rushee).await;

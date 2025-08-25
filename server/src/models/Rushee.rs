@@ -67,6 +67,7 @@ pub struct IncomingRushee {
     pub pis_meeting_id: String,
     pub pis_timeslot: String,
     pub pis_link: String,
+    pub flex_window: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -92,6 +93,7 @@ pub struct RusheeModel {
     pub ratings: Vec<Rating>,
     pub access_code: String,
     pub pis_signup: PISSignup,
+    pub flex_window: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

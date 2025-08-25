@@ -74,7 +74,7 @@ export default function Admin() {
                 const timeslots = response.data.payload;
                 
                 // Create CSV content
-                const csvHeaders = ["Date", "Time", "Rushee Name"];
+                const csvHeaders = ["Date", "Time", "Rushee Name", "Flexible"];
                 
                 // Process each timeslot and create objects for easy sorting
                 const processedSlots = timeslots.map(slot => {
@@ -88,11 +88,15 @@ export default function Admin() {
                     // Get rushee name
                     const rusheeName = `${slot.rushee_first_name} ${slot.rushee_last_name}`;
                     
+                    // Get flexibility status
+                    const flexWindow = slot.flex_window ? "Yes" : "No";
+                    
                     // Create CSV row (escape commas in names)
                     const csvRow = [
                         `"${date}"`,
                         `"${time}"`,
-                        `"${rusheeName}"`
+                        `"${rusheeName}"`,
+                        `"${flexWindow}"`
                     ].join(",");
                     
                     return {
